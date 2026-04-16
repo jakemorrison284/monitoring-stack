@@ -2,7 +2,7 @@ groups:
 - name: payments-core
   rules:
   - alert: HighPaymentErrorRate
-    expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.002
-    for: 30s
+    expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.001
+    for: 60s
     labels: { severity: high }
-    annotations: { summary: "High payment error rate detected", description: "Payment error rate exceeds 0.2%. Please notify the payment processing team and investigate immediately. Check logs for detailed error messages and potential issues with payment gateways." }
+    annotations: { summary: "High payment error rate detected", description: "Payment error rate exceeds 0.1%. Please notify the payment processing team and investigate immediately. Check logs for detailed error messages and potential issues with payment gateways." }
