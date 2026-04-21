@@ -16,5 +16,16 @@ This document summarizes the recent review of the alert configurations within ou
 3. **Enhance Documentation**: Provide detailed documentation for each alert, including its purpose, expected behavior, and response guidelines.
 4. **Regular Review Cycle**: Implement a bi-annual review process for alert configurations to ensure they remain relevant and effective.
 
+## Alerts Documentation
+### 1. HighPaymentErrorRate
+- **Purpose**: Monitors the rate of payment errors to ensure it stays within acceptable limits.
+- **Expected Behavior**: Triggers when the payment error rate exceeds 0.1% for a sustained period of 5 minutes.
+- **Response Action**: Notify the payment processing team immediately and check logs for detailed error messages.
+
+### 2. DuplicatePaymentAlert
+- **Purpose**: Detects multiple payment transactions occurring within a short timeframe, indicating potential issues.
+- **Expected Behavior**: Triggers when duplicate payments are detected within a 5-minute window.
+- **Response Action**: Investigate potential issues in the payment processing system.
+
 ## Conclusion
 Implementing these recommendations will help streamline our alerting process, reduce noise, and improve our response effectiveness. Sharing this document with the team will facilitate discussions on improving our alerting strategies.
