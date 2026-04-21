@@ -19,3 +19,6 @@ Upon receiving the **HighPaymentErrorRate** alert, the following actions are to 
 
 ### Conclusion:
 This update emphasizes the importance of prompt action in response to payment errors. The team is encouraged to familiarize themselves with these changes and the specified response actions to ensure effective handling of alerts.
+
+### Additional Notes:
+- Make sure to review any other related alerts for consistency in thresholds and response actions. This will help maintain a uniform response strategy across all payment alerts.
