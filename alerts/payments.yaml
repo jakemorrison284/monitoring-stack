@@ -4,11 +4,23 @@ groups:
   - alert: HighPaymentErrorRate
     expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.001
     for: 5m
-    labels: { severity: high }
+    labels: { severity: critical }
     annotations: { 
       summary: "High payment error rate detected", 
       description: "Payment error rate exceeds 0.1%. Please notify the payment processing team and investigate immediately. Check logs for detailed error messages and potential issues with payment gateways.", 
       runbook: "https://example.com/runbook/payment-errors", 
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)", 
       escalation: "If not resolved in 30 minutes, escalate to the payment processing manager." 
+    }
+
+  - alert: DuplicatePaymentAlert
+    expr: rate(duplicate_payments_total[5m]) > 0
+    for: 5m
+    labels: { severity: critical }
+    annotations: {
+      summary: "Duplicate payment transactions detected",
+      description: "Multiple payment transactions detected within a short timeframe. Please check for potential issues in the payment processing system.",
+      runbook: "https://example.com/runbook/duplicate-payments",
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
     }
