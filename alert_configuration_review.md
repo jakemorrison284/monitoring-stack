@@ -32,5 +32,8 @@ This document summarizes the recent review of the alert configurations within ou
 - **Expected Behavior**: Triggers when any critical condition is met based on defined thresholds.
 - **Response Action**: Immediate review by the incident response team and escalation as per new protocols.
 
+## Future Tuning Considerations
+- **Historical Data Analysis**: Regular analysis of historical alert data will help in fine-tuning thresholds and response actions for alerts. Adjustments should be made based on trends observed over time to minimize false positives and ensure timely incident detection.
+
 ## Conclusion
 Implementing these recommendations will help streamline our alerting process, reduce noise, and improve our response effectiveness. Sharing this document with the team will facilitate discussions on improving our alerting strategies.
