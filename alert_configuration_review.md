@@ -19,12 +19,12 @@ This document summarizes the recent review of the alert configurations within ou
 ## Alerts Documentation
 ### 1. HighPaymentErrorRate
 - **Purpose**: Monitors the rate of payment errors to ensure it stays within acceptable limits.
-- **Expected Behavior**: Triggers when the payment error rate exceeds **0.03%** for a sustained period of **5 minutes**.
+- **Expected Behavior**: Triggers when the payment error rate exceeds **0.001%** for a sustained period of **5 minutes**.
 - **Response Action**: Notify the payment processing team immediately and check logs for detailed error messages.
 
 ### 2. DuplicatePaymentAlert
 - **Purpose**: Detects multiple payment transactions occurring within a short timeframe, indicating potential issues.
-- **Expected Behavior**: Triggers when duplicate payments are detected within a **5-minute** window.
+- **Expected Behavior**: Triggers when more than **3 duplicates** are detected within a **5-minute** window.
 - **Response Action**: Investigate potential issues in the payment processing system.
 
 ### 3. CriticalAlert (Consolidated Alert)
