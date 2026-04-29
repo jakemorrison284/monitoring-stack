@@ -2,24 +2,24 @@ groups:
 - name: payments-core
   rules:
   - alert: HighPaymentErrorRate
-    expr: rate(payment_errors_total[15m]) / rate(payment_requests_total[15m]) > 0.0015  # Adjusted threshold to 0.15% for accuracy
-    for: 15m
+    expr: rate(payment_errors_total[15m]) / rate(payment_requests_total[15m]) > 0.001  # Adjusted threshold to 0.1% for accuracy
+    for: 15m  # Consider reviewing if a longer duration is appropriate
     labels: { severity: critical }
     annotations: { 
       summary: "High payment error rate detected", 
-      description: "Payment error rate exceeds 0.15%. Please notify the payment processing team and investigate immediately. Check logs for detailed error messages and potential issues with payment gateways.", 
+      description: "Payment error rate exceeds 0.1%. Please notify the payment processing team and investigate immediately. Check logs for detailed error messages and potential issues with payment gateways.", 
       runbook: "https://example.com/runbook/payment-errors", 
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)", 
       escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
     }
 
   - alert: DuplicatePaymentAlert
-    expr: rate(duplicate_payments_total[15m]) > 5  # Adjusted threshold to 5 duplicates
-    for: 15m
+    expr: rate(duplicate_payments_total[15m]) > 3  # Adjusted threshold to 3 duplicates
+    for: 15m  # Assess if this duration is sufficient
     labels: { severity: critical }
     annotations: {
       summary: "Duplicate payment transactions detected",
-      description: "More than 5 duplicate payment transactions detected within a 15-minute window. Please check for potential issues in the payment processing system.",
+      description: "More than 3 duplicate payment transactions detected within a 15-minute window. Please check for potential issues in the payment processing system.",
       runbook: "https://example.com/runbook/duplicate-payments",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 15 minutes, escalate to the payment processing manager.",
