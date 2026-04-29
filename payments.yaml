@@ -1,0 +1,11 @@
+# Resolving Merge Conflicts in payments.yaml
+
+## Merge Conflicts Resolved
+- Resolved conflicts related to payment latency and total payment alerts as suggested in the incident notes.
+
+## Updated Alert Configuration
+- **HighPaymentErrorRate**: Threshold set to 0.03% for a sustained 5 minutes.
+- **DuplicatePaymentAlert**: Triggers on duplicates detected within a 5-minute window.
+
+## Next Steps
+- Test the updated configurations and prepare for deployment.
