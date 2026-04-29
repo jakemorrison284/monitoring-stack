@@ -25,3 +25,15 @@ groups:
       escalation: "If not resolved in 3 minutes, escalate to the payment processing manager.",
       follow_up: "Investigate the root causes of duplicate transactions, linking to relevant logs or transaction IDs."
     }
+
+  - alert: PaymentLatencyAlert
+    expr: avg_over_time(payment_latency_seconds[5m]) > 2  # Alert if average latency exceeds 2 seconds
+    for: 5m
+    labels: { severity: warning }
+    annotations: {
+      summary: "High payment latency detected",
+      description: "The average payment latency exceeds 2 seconds. Please investigate potential bottlenecks in the payment processing pipeline.",
+      runbook: "https://example.com/runbook/payment-latency",
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
+      escalation: "If not resolved in 5 minutes, escalate to the payment processing manager."
+    }
