@@ -7,11 +7,15 @@ alerts:
       source="restore_postgres.sh" AND message:"Database restoration failed" AND level:"error"
     timeframe: 5m
     severity: critical
-    notify: ["pagerduty", "email", "slack"]
+    notify: ["pagerduty", "email", "slack", "sms"]
+    escalation:
+      - after: 10m
+        notify: ["on-call-manager"]
     annotations:
       summary: "Critical failure in PostgreSQL restore process"
       description: "The PostgreSQL restoration process failed, indicating a potential outage or data loss risk. Immediate investigation is required."
       runbook: "https://corrected-runbook-url.com/restore-postgres-failure"
+      review: "Review and tune alert queries and thresholds quarterly."
 
   - name: BackupFileInvalid
     condition: count() > 3
@@ -49,9 +53,21 @@ alerts:
       description: "A dry run of the PostgreSQL restore process was executed successfully, indicating readiness for actual restores."
       runbook: "https://corrected-runbook-url.com/dry-run-success"
 
+  - name: DryRunMissing
+    condition: count() == 0
+    query: |
+      source="restore_postgres.sh" AND message:"Dry run executed successfully"
+    timeframe: 2h
+    severity: warning
+    notify: ["email", "slack", "sms"]
+    annotations:
+      summary: "Dry run of PostgreSQL restore not detected"
+      description: "No dry run of the PostgreSQL restore process has been detected in the last 2 hours. This may indicate readiness issues."
+      runbook: "https://corrected-runbook-url.com/dry-run-monitoring"
+
   - name: RestoreAlertsGroup
     condition: RestoreFailure or BackupFileInvalid or NotificationScriptFailure
-    timeframe: 0m
+    timeframe: 5m
     severity: info
     notify: ["email", "slack"]
     annotations:
