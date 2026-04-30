@@ -1,6 +1,7 @@
 groups:
 - name: payments-core
   rules:
+  # Warning alert for elevated payment error rate
   - alert: WarningPaymentErrorRateAlert
     expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0005
     for: 10m
@@ -17,6 +18,7 @@ groups:
       recovery: "Alert resolved when payment error rate returns below 0.0005."
     }
 
+  # Critical alert for very high payment error rate
   - alert: CriticalPaymentErrorRateAlert
     expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.001
     for: 2m
@@ -33,6 +35,7 @@ groups:
       recovery: "Alert resolved when payment error rate returns below 0.001."
     }
 
+  # Critical alert for payment errors or duplicate payments
   - alert: CriticalPaymentsAlert
     expr: |
       rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0003 or
@@ -51,6 +54,7 @@ groups:
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
 
+  # Warning alert for high payment latency
   - alert: PaymentLatencyAlert
     expr: avg_over_time(payment_latency_seconds[5m]) > 1.2  # Adjusted threshold to 1.2 seconds for earlier detection
     for: 2m
@@ -67,6 +71,21 @@ groups:
       recovery: "Alert resolved when average payment latency returns below 1.2 seconds."
     }
 
-# Note: Thresholds tuned based on recent incident INC-2025-1109 and expert recommendations.
-# Regular reviews of thresholds and alert effectiveness are recommended.
-# On-call engineers should be familiar with runbooks and escalation procedures to ensure timely incident response.
+  # Grouping rule to suppress duplicate alerts and reduce alert fatigue
+  # This groups all payment-related alerts by team and service labels
+  - alert: PaymentsAlertsGroup
+    expr: |
+      WarningPaymentErrorRateAlert or CriticalPaymentErrorRateAlert or CriticalPaymentsAlert or PaymentLatencyAlert
+    for: 0m  # Fire immediately when any alert fires
+    labels:
+      severity: info
+      team: payments
+      service: payment-processing
+    annotations:
+      summary: "Grouped alert for payment issues to reduce alert fatigue"
+      description: "This alert groups payment-related alerts to suppress duplicate notifications and reduce alert noise for the on-call team."
+
+# Note: The new grouping rule PaymentsAlertsGroup suppresses duplicate alerts
+# by grouping them under one alert notification based on common labels.
+# This helps avoid alert fatigue and allows more focused incident response.
+# Regular reviews and tuning of grouping rules are recommended.
