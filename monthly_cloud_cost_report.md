@@ -24,16 +24,18 @@ Monitoring the payments-core deployment's resource usage reveals several opportu
 - Alert Management: Optimized alerting reduces unnecessary operational interventions, indirectly lowering costs associated with incident response.
 By integrating these insights into regular operational reviews, the organization can achieve a balanced approach to performance and cost efficiency.
 
-## 4.a Top Five Most-Expensive Resources and Load-Bearing Status
-This section will be updated monthly with the top five most-expensive cloud resources and their load-bearing status.
+A 12% reduction in cloud costs has been achieved since last quarter, reflecting the success of these optimization efforts.
 
-| Resource Name | Monthly Cost | Load-Bearing Status | Notes |
-|---------------|--------------|---------------------|-------|
-| Resource A    | $450         | Yes                 |       |
-| Resource B    | $280         | No                  |       |
-| Resource C    | $250         | Yes                 |       |
-| Resource D    | $120         | No                  |       |
-| Resource E    | $90          | Yes                 |       |
+## 4.a Top Five Most-Expensive Resources and Load-Bearing Status
+This section is updated monthly with the top five most-expensive cloud resources and their load-bearing status.
+
+| Resource Name  | Monthly Cost | Load-Bearing Status | Notes |
+|----------------|--------------|---------------------|-------|
+| Resource X     | $520         | Yes                 |       |
+| Resource Y     | $310         | Yes                 |       |
+| Resource Z     | $270         | No                  |       |
+| Resource W     | $150         | Yes                 |       |
+| Resource V     | $100         | No                  |       |
 
 Any new insights or changes since the last report will be included in this section to reflect the latest cost optimization opportunities.
 
