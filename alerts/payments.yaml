@@ -60,9 +60,9 @@ groups:
       recovery: "Alert resolved when average payment latency returns below 1.2 seconds."
     }
 
-  # Dynamic threshold alert - reactivated and tuned
+  # Dynamic threshold alert - tuned with adjusted multiplier, lookback period, and minimum traffic threshold
   - alert: DynamicPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > (0.5 * avg_over_time(rate(payment_errors_total[1h]) / rate(payment_requests_total[1h])[1d]))
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > (0.75 * avg_over_time(rate(payment_errors_total[1h]) / rate(payment_requests_total[1h])[3d])) and rate(payment_requests_total[1h]) > 100
     for: 10m
     labels:
       severity: warning
@@ -72,7 +72,7 @@ groups:
       alert_quality: needs_review
     annotations:
       summary: "Payment error rate above dynamic threshold"
-      description: "Payment error rate has exceeded 50% above the daily average baseline for more than 10 minutes. Confirm system support and test this alert."
+      description: "Payment error rate has exceeded 75% above the 3-day average baseline for more than 10 minutes, with minimum traffic threshold. Confirm system support and test this alert."
       runbook: "https://internal-runbook.yara.com/payment-errors-dynamic"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If persistent for 10 minutes, escalate to payment processing manager."
@@ -81,7 +81,7 @@ groups:
   # Enhanced grouping rule to suppress duplicate alerts and reduce alert fatigue
   - alert: PaymentsAlertsGroup
     expr: |
-      WarningPaymentErrorRateAlert or CriticalPaymentIssuesAlert or PaymentLatencyAlert or DynamicPaymentErrorRateAlert or PaymentSuccessRateAlert or PaymentRequestsAbsentAlert or PaymentErrorRateByMethodAlert
+      (WarningPaymentErrorRateAlert or CriticalPaymentIssuesAlert or PaymentLatencyAlert or DynamicPaymentErrorRateAlert or PaymentSuccessRateAlert or PaymentRequestsAbsentAlert or PaymentErrorRateByMethodAlert or PaymentGatewayAvailabilityAlert) and on()
     for: 0m
     labels:
       severity: none
@@ -159,7 +159,6 @@ groups:
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when payment error rates return below threshold for all payment methods."
-}
 
 # Alert dependencies to reduce noise: lower severity alerts suppressed if higher severity alert firing
   - alert: WarningPaymentErrorRateAlert
