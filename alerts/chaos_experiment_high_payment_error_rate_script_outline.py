@@ -10,6 +10,7 @@ Note: Integration with actual payment processing system, Prometheus alert manage
 
 import time
 import logging
+import requests
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -19,11 +20,21 @@ ERROR_RATE_THRESHOLD = 0.0005  # 0.05%
 ERROR_INJECTION_DURATION = 15 * 60  # 15 minutes in seconds
 OBSERVATION_INTERVAL = 60  # Check every 60 seconds
 
+SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/your/webhook/url"  # Placeholder for Slack webhook URL
 
 def notify_teams():
-    """Notify payment processing and on-call teams about the experiment."""
-    logging.info("Notify payment processing and on-call teams of planned chaos experiment.")
-    # TODO: Integrate with communication tools (email, Slack, PagerDuty, etc.)
+    """Notify payment processing and on-call teams about the experiment via Slack."""
+    message = {
+        "text": "Heads up: A chaos experiment to simulate elevated payment error rates is starting. Please be aware of potential alerts."
+    }
+    try:
+        response = requests.post(SLACK_WEBHOOK_URL, json=message)
+        if response.status_code != 200:
+            logging.error(f"Failed to send Slack notification: {response.status_code}, {response.text}")
+        else:
+            logging.info("Slack notification sent successfully.")
+    except Exception as e:
+        logging.error(f"Exception sending Slack notification: {e}")
 
 
 def inject_payment_errors():
