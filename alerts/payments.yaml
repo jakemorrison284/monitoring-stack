@@ -199,3 +199,73 @@ groups:
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
+
+  # Additional alert rules added based on suggestions
+
+  # Alert for significant drop in payment request volume compared to baseline
+  - alert: PaymentVolumeDropAlert
+    expr: (rate(payment_requests_total[10m]) < 0.7 * avg_over_time(rate(payment_requests_total[10m])[1d]))
+    for: 10m
+    labels:
+      severity: critical
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "Significant drop in payment request volume detected"
+      description: "The payment request volume has dropped below 70% of the daily average baseline for more than 10 minutes. Investigate potential upstream or service issues."
+      runbook: "https://internal-runbook.yara.com/payment-volume-drop"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when payment request volume returns to normal baseline."
+
+  # Alert for high latency on specific payment methods
+  - alert: PaymentMethodLatencyAlert
+    expr: avg_over_time(payment_latency_seconds[5m]) by (payment_method) > 1.5
+    for: 5m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "High payment latency detected for payment method {{ $labels.payment_method }}"
+      description: "The average payment latency for payment method {{ $labels.payment_method }} exceeds 1.5 seconds for more than 5 minutes. Investigate potential bottlenecks or issues with this method."
+      runbook: "https://internal-runbook.yara.com/payment-method-latency"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when payment latency for the payment method returns below threshold."
+
+  # Alert for high payment retry rate
+  - alert: PaymentRetryRateAlert
+    expr: rate(payment_retries_total[10m]) / rate(payment_requests_total[10m]) > 0.01
+    for: 10m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "High payment retry rate detected"
+      description: "The payment retry rate has exceeded 1% of total payment requests for more than 10 minutes. Investigate causes of retries such as transient failures or gateway issues."
+      runbook: "https://internal-runbook.yara.com/payment-retries"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when payment retry rate returns below threshold."
+
+  # Alert on spikes in specific payment gateway error codes
+  - alert: PaymentGatewayErrorCodeSpikeAlert
+    expr: rate(payment_gateway_error_codes_total{code=~"5.."}[5m]) > 5
+    for: 5m
+    labels:
+      severity: critical
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "Spike in 5xx payment gateway error codes detected"
+      description: "There is a spike in 5xx error codes from the payment gateway, indicating potential external service issues. Immediate investigation required."
+      runbook: "https://internal-runbook.yara.com/payment-gateway-errors"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when error code rate returns to normal levels."
