@@ -59,10 +59,10 @@ alerts:
       escalation: "Escalate as per escalation policy above."
 
   - name: RestoreResourceUtilizationHighCPU
-    condition: avg(cpu_usage) > 80
+    condition: avg(cpu_usage) > 85
     query: |
       source="restore_postgres.sh" AND metric="cpu_usage"
-    timeframe: 5m
+    timeframe: 7m
     severity: warning
     notify: ["email", "slack", "opsgenie"]
     labels:
@@ -73,15 +73,15 @@ alerts:
       priority: P3
     annotations:
       summary: "High CPU usage during PostgreSQL restore"
-      description: "CPU usage during the PostgreSQL restore process has exceeded 80% over the last 5 minutes, which may impact performance. Investigate resource contention."
+      description: "CPU usage during the PostgreSQL restore process has exceeded 85% over the last 7 minutes, which may impact performance. Investigate resource contention."
       runbook: "https://internal-runbook.yara.com/restore-resource-utilization"
       contact: "On-call Rotation: Use on-call system to determine contact"
 
   - name: RestoreResourceUtilizationHighMemory
-    condition: avg(memory_usage) > 80
+    condition: avg(memory_usage) > 85
     query: |
       source="restore_postgres.sh" AND metric="memory_usage"
-    timeframe: 5m
+    timeframe: 7m
     severity: warning
     notify: ["email", "slack", "opsgenie"]
     labels:
@@ -92,12 +92,12 @@ alerts:
       priority: P3
     annotations:
       summary: "High memory usage during PostgreSQL restore"
-      description: "Memory usage during the PostgreSQL restore process has exceeded 80% over the last 5 minutes, which may impact performance. Investigate resource contention."
+      description: "Memory usage during the PostgreSQL restore process has exceeded 85% over the last 7 minutes, which may impact performance. Investigate resource contention."
       runbook: "https://internal-runbook.yara.com/restore-resource-utilization"
       contact: "On-call Rotation: Use on-call system to determine contact"
 
   - name: RestoreDurationAnomaly
-    condition: avg(duration) > (avg_over_time(duration[7d]) * 1.5)
+    condition: avg(duration) > (avg_over_time(duration[7d]) * 1.4)
     query: |
       source="restore_postgres.sh" AND message:"Restore job completed"
     timeframe: 10m
@@ -111,7 +111,7 @@ alerts:
       priority: P3
     annotations:
       summary: "Anomalous increase in PostgreSQL restore duration"
-      description: "The duration of the PostgreSQL restore job has increased by 50% or more compared to the 7-day average, indicating potential performance degradation. Investigate promptly."
+      description: "The duration of the PostgreSQL restore job has increased by 40% or more compared to the 7-day average, indicating potential performance degradation. Investigate promptly."
       runbook: "https://internal-runbook.yara.com/restore-duration-anomaly"
       contact: "On-call Rotation: Use on-call system to determine contact"
 
@@ -178,7 +178,7 @@ alerts:
     condition: count() == 0
     query: |
       source="restore_postgres.sh" AND message:"Dry run executed successfully"
-    timeframe: 2h
+    timeframe: 2h30m
     severity: warning
     notify: ["email", "slack", "sms", "opsgenie"]
     labels:
@@ -189,7 +189,7 @@ alerts:
       priority: P3
     annotations:
       summary: "Dry run of PostgreSQL restore not detected"
-      description: "No dry run of the PostgreSQL restore process has been detected in the last 2 hours. This may indicate readiness issues."
+      description: "No dry run of the PostgreSQL restore process has been detected in the last 2.5 hours. This may indicate readiness issues."
       runbook: "https://internal-runbook.yara.com/dry-run-monitoring"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 30 minutes, escalate to db-restore-team lead."
@@ -218,7 +218,7 @@ alerts:
     condition: avg(success) < 0.95
     query: |
       source="restore_postgres.sh" AND message:"Restore job status"
-    timeframe: 1h
+    timeframe: 1h30m
     severity: warning
     notify: ["email", "slack", "opsgenie"]
     labels:
@@ -229,7 +229,7 @@ alerts:
       priority: P3
     annotations:
       summary: "PostgreSQL restore success rate dropped below 95%"
-      description: "The success rate of PostgreSQL restore jobs has dropped below 95% over the past hour. Immediate investigation is recommended."
+      description: "The success rate of PostgreSQL restore jobs has dropped below 95% over the past 1.5 hours. Immediate investigation is recommended."
       runbook: "https://internal-runbook.yara.com/restore-success-rate-drop"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 30 minutes, escalate to db-restore-team lead."
