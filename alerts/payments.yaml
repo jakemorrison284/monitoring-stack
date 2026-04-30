@@ -116,9 +116,34 @@ groups:
       summary: "Grouped alert for payment issues to reduce alert fatigue"
       description: "This alert groups payment-related alerts to suppress duplicate notifications and reduce alert noise for the on-call team. Regular review and tuning recommended."
 
-# Notes:
-# - Validate thresholds with historical data to minimize false positives.
-# - Confirm dynamic threshold alert support and test thoroughly.
-# - Use on-call rotation system for contact information instead of static contacts.
-# - Regularly review alert noise metrics and adjust grouping or thresholds as needed.
-# - Keep runbooks and documentation up to date for effective incident response.
+  # New alert for payment success rate
+  - alert: PaymentSuccessRateAlert
+    expr: (rate(payment_success_total[10m]) / rate(payment_requests_total[10m])) < 0.99
+    for: 5m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+    annotations:
+      summary: "Payment success rate dropped below 99%"
+      description: "The ratio of successful payment transactions to total payment requests has dropped below 99% for more than 5 minutes. Investigate potential issues affecting payment success."
+      runbook: "https://internal-runbook.yara.com/payment-success-rate"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when payment success rate returns above 99%."
+
+  # New alert for payment gateway availability
+  - alert: PaymentGatewayAvailabilityAlert
+    expr: avg_over_time(payment_gateway_availability[10m]) < 0.995
+    for: 10m
+    labels:
+      severity: critical
+      team: payments
+      service: payment-processing
+    annotations:
+      summary: "Payment gateway availability below 99.5%"
+      description: "The payment gateway availability metric has dropped below 99.5% for more than 10 minutes. Immediate investigation required."
+      runbook: "https://internal-runbook.yara.com/payment-gateway-availability"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when payment gateway availability returns above 99.5%."
