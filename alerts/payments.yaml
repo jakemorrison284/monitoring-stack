@@ -1,55 +1,66 @@
 groups:
 - name: payments-core
   rules:
-  - alert: WarningPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0002
-    for: 10m
-    labels:
-      severity: warning
-      team: payments
-      service: payment-processing
-    annotations: {
-      summary: "Elevated payment error rate detected",
-      description: "The payment error rate has exceeded 0.0002 for 10 minutes. Please investigate potential issues before escalation.",
-      runbook: "https://valid-runbook-url.com/payment-errors",
-      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
-      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0002."
-    }
-
   - alert: CriticalPaymentsAlert
     expr: |
       rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0004 or
       rate(duplicate_payments_total[15m]) > 2
     for: 15m
     labels: 
-      severity: critical
+      severity: P1
       team: payments
       service: payment-processing
-    annotations: {
-      summary: "Critical payment issues detected",
-      description: "High payment error rate or duplicate payment transactions detected. Immediate investigation required.",
-      runbook: "https://valid-runbook-url.com/payment-errors",
-      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
-      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager.",
+    annotations:
+      summary: "Critical payment issues detected"
+      description: "High payment error rate or duplicate payment transactions detected. Immediate investigation required."
+      runbook: "https://example.com/runbook/payment-errors"
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)"
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
-    }
+      note: "Verify thresholds against historical data quarterly to avoid alert fatigue."
 
   - alert: PaymentLatencyAlert
-    expr: avg_over_time(payment_latency_seconds[5m]) > 1.5  # Adjusted threshold to 1.5 seconds for earlier detection
+    expr: avg_over_time(payment_latency_seconds[5m]) > 1.5
     for: 5m
     labels: 
-      severity: warning
+      severity: P2
       team: payments
       service: payment-processing
-    annotations: {
-      summary: "High payment latency detected",
-      description: "The average payment latency exceeds 1.5 seconds. Please investigate potential bottlenecks in the payment processing pipeline.",
-      runbook: "https://valid-runbook-url.com/payment-latency",
-      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
-      escalation: "If not resolved in 5 minutes, escalate to the payment processing manager.",
+    annotations:
+      summary: "High payment latency detected"
+      description: "The average payment latency exceeds 1.5 seconds. Investigate potential bottlenecks."
+      runbook: "https://example.com/runbook/payment-latency"
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)"
+      escalation: "If not resolved in 5 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when average payment latency returns below 1.5 seconds."
-    }
+      note: "Review latency trends monthly to adjust thresholds."
 
-# Note: Thresholds should be validated regularly against historical data to ensure alert sensitivity and reduce false positives.
-# On-call engineers should be familiar with runbooks and escalation procedures to ensure timely incident response.
+  - alert: PaymentServiceDown
+    expr: absent(up{job="payment-processing"} == 1)
+    for: 5m
+    labels:
+      severity: P1
+      team: payments
+      service: payment-processing
+    annotations:
+      summary: "Payment Processing Service Down"
+      description: "No successful payment-processing service instances detected for 5 minutes."
+      runbook: "https://example.com/runbook/payment-service-down"
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)"
+      escalation: "Immediate escalation to on-call payment processing team."
+      recovery: "Alert resolved when at least one payment-processing service instance is healthy."
+
+  - alert: PaymentTransactionVolumeDrop
+    expr: rate(payment_requests_total[10m]) < 50
+    for: 10m
+    labels:
+      severity: P2
+      team: payments
+      service: payment-processing
+    annotations:
+      summary: "Payment Transaction Volume Drop"
+      description: "Payment transaction volume has dropped below expected levels for 10 minutes."
+      runbook: "https://example.com/runbook/payment-volume-drop"
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)"
+      escalation: "Investigate potential upstream issues or outages impacting payment traffic."
+      recovery: "Alert resolved when payment transaction volume returns to normal levels."
