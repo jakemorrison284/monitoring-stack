@@ -2,70 +2,71 @@ groups:
 - name: payments-core
   rules:
   - alert: WarningPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0004
-    for: 7m
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.00035
+    for: 5m
     labels:
       severity: warning
       team: payments
       service: payment-processing
     annotations: {
       summary: "Elevated payment error rate detected",
-      description: "The payment error rate has exceeded 0.0004 for 7 minutes. Please investigate potential issues before escalation.",
+      description: "The payment error rate has exceeded 0.00035 for 5 minutes. Please investigate potential issues before escalation. This tuning is based on recent incident INC-2025-1109 and subsequent recommendations.",
       runbook: "https://corrected-runbook-url.com/payment-errors",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
-      escalation: "If not resolved in 7 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0004."
+      escalation: "If not resolved in 5 minutes, escalate to the payment processing manager.",
+      recovery: "Alert resolved when payment error rate returns below 0.00035."
     }
 
   - alert: CriticalPaymentErrorRateAlert
-    expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.0009
-    for: 4m
+    expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.0008
+    for: 3m
     labels:
       severity: critical
       team: payments
       service: payment-processing
     annotations: {
       summary: "Critical payment error rate detected",
-      description: "The payment error rate has exceeded 0.0009 for 4 minutes. Immediate investigation required.",
+      description: "The payment error rate has exceeded 0.0008 for 3 minutes. Immediate investigation required. This adjustment follows recent incident INC-2025-1109 and expert tuning recommendations.",
       runbook: "https://corrected-runbook-url.com/payment-errors-critical",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
-      escalation: "If not resolved in 4 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0009."
+      escalation: "If not resolved in 3 minutes, escalate to the payment processing manager.",
+      recovery: "Alert resolved when payment error rate returns below 0.0008."
     }
 
   - alert: CriticalPaymentsAlert
     expr: |
-      rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.00035 or
-      rate(duplicate_payments_total[15m]) > 3
-    for: 13m
+      rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0003 or
+      rate(duplicate_payments_total[15m]) > 4
+    for: 12m
     labels: 
       severity: critical
       team: payments
       service: payment-processing
     annotations: {
       summary: "Critical payment issues detected",
-      description: "High payment error rate or duplicate payment transactions detected. Immediate investigation required.",
+      description: "High payment error rate or duplicate payment transactions detected. Immediate investigation required. This tuning is based on lessons from incident INC-2025-1109.",
       runbook: "https://corrected-runbook-url.com/payment-errors-critical",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
-      escalation: "If not resolved in 13 minutes, escalate to the payment processing manager.",
+      escalation: "If not resolved in 12 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
 
   - alert: PaymentLatencyAlert
-    expr: avg_over_time(payment_latency_seconds[5m]) > 1.4  # Adjusted threshold to 1.4 seconds for earlier detection
-    for: 4m
+    expr: avg_over_time(payment_latency_seconds[5m]) > 1.3  # Adjusted threshold to 1.3 seconds for earlier detection
+    for: 3m
     labels: 
       severity: warning
       team: payments
       service: payment-processing
     annotations: {
       summary: "High payment latency detected",
-      description: "The average payment latency exceeds 1.4 seconds. Please investigate potential bottlenecks in the payment processing pipeline.",
+      description: "The average payment latency exceeds 1.3 seconds. Please investigate potential bottlenecks in the payment processing pipeline. Tuning based on incident INC-2025-1109 review.",
       runbook: "https://corrected-runbook-url.com/payment-latency",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
-      escalation: "If not resolved in 4 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when average payment latency returns below 1.4 seconds."
+      escalation: "If not resolved in 3 minutes, escalate to the payment processing manager.",
+      recovery: "Alert resolved when average payment latency returns below 1.3 seconds."
     }
 
-# Note: Thresholds should be validated regularly against historical data to ensure alert sensitivity and reduce false positives.
+# Note: Thresholds tuned based on recent incident INC-2025-1109 and expert recommendations.
+# Regular reviews of thresholds and alert effectiveness are recommended.
 # On-call engineers should be familiar with runbooks and escalation procedures to ensure timely incident response.
