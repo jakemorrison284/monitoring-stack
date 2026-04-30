@@ -1,7 +1,7 @@
 groups:
 - name: payments-core
   rules:
-  - alert: CriticalPaymentsAlert
+  - alert: HighPaymentErrorRate
     expr: |
       rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0005 or
       rate(duplicate_payments_total[15m]) > 3
