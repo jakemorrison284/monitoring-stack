@@ -9,6 +9,8 @@ groups:
       severity: info
       team: payments
       service: payment-processing
+      alert_type: threshold
+      alert_quality: needs_review
     annotations:
       summary: "Low-level payment error anomaly detected"
       description: "A low but persistent payment error rate above 0.0001 has been detected for 20 minutes. This is an early signal for potential issues. Validate threshold with historical data to minimize false positives."
@@ -16,6 +18,7 @@ groups:
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "No immediate escalation. Monitor and investigate if trend continues."
       recovery: "Alert resolved when payment error rate returns below 0.0001."
+      note: "TODO: tune or delete this alert if it causes alert fatigue."
 
   # Warning alert for elevated payment error rate
   - alert: WarningPaymentErrorRateAlert
@@ -25,6 +28,7 @@ groups:
       severity: warning
       team: payments
       service: payment-processing
+      alert_type: threshold
     annotations: {
       summary: "Elevated payment error rate detected",
       description: "The payment error rate has exceeded 0.0005 for 7 minutes. Please investigate potential issues before escalation. Threshold based on incident INC-2025-1109. Validate with historical data.",
@@ -42,6 +46,7 @@ groups:
       severity: critical
       team: payments
       service: payment-processing
+      alert_type: threshold
     annotations: {
       summary: "Critical payment error rate detected",
       description: "The payment error rate has exceeded 0.001 for 2 minutes. Immediate investigation required. Threshold based on incident INC-2025-1109.",
@@ -61,6 +66,7 @@ groups:
       severity: critical
       team: payments
       service: payment-processing
+      alert_type: threshold
     annotations: {
       summary: "Critical payment issues detected",
       description: "High payment error rate or duplicate payment transactions detected. Immediate investigation required. Threshold based on incident INC-2025-1109.",
@@ -78,6 +84,7 @@ groups:
       severity: warning
       team: payments
       service: payment-processing
+      alert_type: threshold
     annotations: {
       summary: "High payment latency detected",
       description: "The average payment latency exceeds 1.2 seconds. Investigate potential bottlenecks. Threshold based on incident INC-2025-1109.",
@@ -95,6 +102,8 @@ groups:
       severity: warning
       team: payments
       service: payment-processing
+      alert_type: dynamic
+      alert_quality: needs_review
     annotations:
       summary: "Payment error rate above dynamic threshold"
       description: "Payment error rate has exceeded 50% above the daily average baseline. Confirm system support and test this alert."
@@ -102,6 +111,7 @@ groups:
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If persistent for 7 minutes, escalate to payment processing manager."
       recovery: "Alert resolved when payment error rate returns below dynamic threshold."
+      note: "TODO: tune or delete this alert if it causes alert fatigue."
 
   # Enhanced grouping rule to suppress duplicate alerts and reduce alert fatigue
   - alert: PaymentsAlertsGroup
@@ -112,6 +122,7 @@ groups:
       severity: info
       team: payments
       service: payment-processing
+      alert_type: threshold
     annotations:
       summary: "Grouped alert for payment issues to reduce alert fatigue"
       description: "This alert groups payment-related alerts to suppress duplicate notifications and reduce alert noise for the on-call team. Regular review and tuning recommended."
@@ -124,6 +135,7 @@ groups:
       severity: warning
       team: payments
       service: payment-processing
+      alert_type: threshold
     annotations:
       summary: "Payment success rate dropped below 99%"
       description: "The ratio of successful payment transactions to total payment requests has dropped below 99% for more than 5 minutes. Investigate potential issues affecting payment success."
@@ -140,6 +152,7 @@ groups:
       severity: critical
       team: payments
       service: payment-processing
+      alert_type: threshold
     annotations:
       summary: "Payment gateway availability below 99.5%"
       description: "The payment gateway availability metric has dropped below 99.5% for more than 10 minutes. Immediate investigation required."
@@ -147,3 +160,37 @@ groups:
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when payment gateway availability returns above 99.5%."
+
+  # New alert for sustained absence of payment requests metric
+  - alert: PaymentRequestsAbsentAlert
+    expr: absent_over_time(payment_requests_total[10m])
+    for: 10m
+    labels:
+      severity: critical
+      team: payments
+      service: payment-processing
+      alert_type: sustained_absence
+    annotations:
+      summary: "Sustained absence of payment requests metric"
+      description: "No payment requests metric has been received for more than 10 minutes. This may indicate a monitoring or service outage. Immediate investigation required."
+      runbook: "https://internal-runbook.yara.com/payment-requests-absent"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when payment requests metric is received again."
+
+  # New multi-dimensional alert for payment error rate by payment method
+  - alert: PaymentErrorRateByMethodAlert
+    expr: rate(payment_errors_total{payment_method!=""}[10m]) / rate(payment_requests_total{payment_method!=""}[10m]) > 0.001
+    for: 5m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "Elevated payment error rate detected by payment method"
+      description: "The payment error rate for one or more payment methods has exceeded 0.1% for more than 5 minutes. Investigate potential issues specific to payment methods."
+      runbook: "https://internal-runbook.yara.com/payment-errors-by-method"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when payment error rates return below threshold for all payment methods."
