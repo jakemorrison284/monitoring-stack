@@ -6,8 +6,8 @@ groups:
 
   # Warning alert for elevated payment error rate - threshold slightly increased
   - alert: WarningPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0006
-    for: 10m  # Increased duration for stability
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.00075
+    for: 15m  # Increased duration for stability and reduced noise
     labels:
       severity: warning
       team: payments
@@ -15,11 +15,11 @@ groups:
       alert_type: threshold
     annotations: {
       summary: "Elevated payment error rate detected",
-      description: "The payment error rate has exceeded 0.0006 for 10 minutes. Please investigate potential issues before escalation. Threshold based on incident INC-2025-1109. Validate with historical data.",
+      description: "The payment error rate has exceeded 0.00075 for 15 minutes. Please investigate potential issues before escalation. Threshold and duration increased to reduce alert fatigue. Validate with historical data.",
       runbook: "https://internal-runbook.yara.com/payment-errors",
       contact: "On-call Rotation: Use on-call system to determine contact",
-      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0006."
+      escalation: "If not resolved in 20 minutes, escalate to the payment processing manager.",
+      recovery: "Alert resolved when payment error rate returns below 0.00075."
     }
 
   # Critical alert for very high payment error rate - duration slightly increased
@@ -60,10 +60,10 @@ groups:
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
 
-  # Warning alert for high payment latency - duration increased
+  # Warning alert for high payment latency - duration increased and threshold adjusted
   - alert: PaymentLatencyAlert
-    expr: avg_over_time(payment_latency_seconds[5m]) > 1.2
-    for: 3m  # Increased duration for stability
+    expr: avg_over_time(payment_latency_seconds[5m]) > 1.5
+    for: 5m  # Increased duration for stability and reduced noise
     labels: 
       severity: warning
       team: payments
@@ -71,11 +71,11 @@ groups:
       alert_type: threshold
     annotations: {
       summary: "High payment latency detected",
-      description: "The average payment latency exceeds 1.2 seconds. Investigate potential bottlenecks. Threshold based on incident INC-2025-1109.",
+      description: "The average payment latency exceeds 1.5 seconds for 5 minutes. Investigate potential bottlenecks. Threshold and duration increased to reduce alert fatigue.",
       runbook: "https://internal-runbook.yara.com/payment-latency",
       contact: "On-call Rotation: Use on-call system to determine contact",
-      escalation: "If not resolved in 5 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when average payment latency returns below 1.2 seconds."
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
+      recovery: "Alert resolved when average payment latency returns below 1.5 seconds."
     }
 
   # Dynamic threshold alert - reactivated and tuned
