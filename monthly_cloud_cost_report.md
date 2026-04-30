@@ -29,11 +29,11 @@ This section will be updated monthly with the top five most-expensive cloud reso
 
 | Resource Name | Monthly Cost | Load-Bearing Status | Notes |
 |---------------|--------------|---------------------|-------|
-| Resource A    | $500         | Yes                 |       |
-| Resource B    | $300         | No                  |       |
+| Resource A    | $450         | Yes                 |       |
+| Resource B    | $280         | No                  |       |
 | Resource C    | $250         | Yes                 |       |
-| Resource D    | $150         | No                  |       |
-| Resource E    | $100         | Yes                 |       |
+| Resource D    | $120         | No                  |       |
+| Resource E    | $90          | Yes                 |       |
 
 Any new insights or changes since the last report will be included in this section to reflect the latest cost optimization opportunities.
 
