@@ -46,4 +46,30 @@ This document summarizes the specific alerts related to HighPaymentErrorRate fro
 
 ---
 
-These alerts provide comprehensive monitoring of payment error rates and related issues to support effective incident detection and response during chaos experiments.
+# Chaos Experiment Recommendations for HighPaymentErrorRate Alert
+
+To ensure effective chaos experiments and minimize operational risks, please follow these recommendations:
+
+## Preparation
+- Notify payment processing and on-call teams of planned experiments ahead of time to avoid confusion.
+- Review runbooks and escalation policies for all related alerts.
+- Establish clear communication channels for incident handling during the experiment.
+
+## Experiment Execution
+- Limit error injection scope and duration to minimize user impact.
+- Conduct experiments preferably during low-traffic periods.
+- Have rollback and incident response plans ready.
+
+## Post-Experiment
+- Conduct a retrospective with involved teams to review alert effectiveness and operational impact.
+- Analyze alert noise, false positives, and runbook gaps.
+- Document lessons learned and update alert configurations or runbooks as needed.
+
+## Success Criteria
+- Alerts fire accurately and escalate per policy.
+- Related alerts trigger appropriately without excessive noise.
+- Teams follow runbooks and escalation paths effectively.
+- System recovers cleanly with alerts resolving after error injection stops.
+- Insights gained lead to improved alert tuning and incident handling.
+
+These recommendations aim to enhance the robustness and reliability of payment error rate alerting during chaos experiments and real incidents.
