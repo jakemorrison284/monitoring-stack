@@ -58,4 +58,6 @@ alerts:
       summary: "Grouped alert to reduce alert fatigue for PostgreSQL restore issues"
       description: "This alert groups multiple restore-related alerts to reduce duplicate notifications."
 
-# Periodically review and tune alert queries, thresholds, and timeframes to minimize false positives and improve detection accuracy.
+# Reminder: Periodically review and tune alert queries, thresholds, and timeframes to minimize false positives and improve detection accuracy.
+# Consider expanding notification channels and escalation paths for critical alerts.
+# Add alert correlation or suppression rules to reduce alert fatigue where appropriate.
