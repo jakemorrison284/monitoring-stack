@@ -2,15 +2,15 @@ groups:
 - name: payments-core
   rules:
   - alert: HighPaymentErrorRate
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0005  # Adjusted threshold to 0.05% for accuracy
-    for: 15m  # Consider reviewing if a longer duration is appropriate
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.001  # Updated threshold to 0.1%
+    for: 5m  # Updated evaluation period to 5 minutes
     labels: { severity: critical }
     annotations: { 
       summary: "High payment error rate detected", 
-      description: "Payment error rate exceeds 0.05%. Please notify the payment processing team and investigate immediately. Check logs for detailed error messages and potential issues with payment gateways.", 
+      description: "Payment error rate exceeds 0.1%. Please notify the payment processing team and investigate immediately. Check logs for detailed error messages and potential issues with payment gateways.", 
       runbook: "https://example.com/runbook/payment-errors", 
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)", 
-      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      escalation: "If not resolved in 5 minutes, escalate to the payment processing manager."
     }
 
   - alert: DuplicatePaymentAlert
