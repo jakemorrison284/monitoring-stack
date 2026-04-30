@@ -6,8 +6,8 @@ groups:
 
   # Warning alert for elevated payment error rate
   - alert: WarningPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0006
-    for: 10m
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.001
+    for: 15m
     labels:
       severity: warning
       team: payments
@@ -15,11 +15,11 @@ groups:
       alert_type: threshold
     annotations: {
       summary: "Elevated payment error rate detected",
-      description: "The payment error rate has exceeded 0.0006 for 10 minutes. Please investigate potential issues before escalation.",
+      description: "The payment error rate has exceeded 0.001 for 15 minutes. Please investigate potential issues before escalation. Typical causes include transient network issues or minor service degradation.",
       runbook: "https://internal-runbook.yara.com/payment-errors",
       contact: "On-call Rotation: Use on-call system to determine contact",
       escalation: "If not resolved in 15 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0006."
+      recovery: "Alert resolved when payment error rate returns below 0.001."
     }
 
   # Consolidated critical alert for high payment error rate or duplicate payments
@@ -45,7 +45,7 @@ groups:
   # Warning alert for high payment latency
   - alert: PaymentLatencyAlert
     expr: avg_over_time(payment_latency_seconds[5m]) > 1.2
-    for: 3m
+    for: 5m
     labels:
       severity: warning
       team: payments
@@ -53,7 +53,7 @@ groups:
       alert_type: threshold
     annotations: {
       summary: "High payment latency detected",
-      description: "The average payment latency exceeds 1.2 seconds. Investigate potential bottlenecks.",
+      description: "The average payment latency exceeds 1.2 seconds. Investigate potential bottlenecks such as network, database, or third-party services.",
       runbook: "https://internal-runbook.yara.com/payment-latency",
       contact: "On-call Rotation: Use on-call system to determine contact",
       escalation: "If not resolved in 5 minutes, escalate to the payment processing manager.",
@@ -95,7 +95,7 @@ groups:
   # New alert for payment success rate
   - alert: PaymentSuccessRateAlert
     expr: (rate(payment_success_total[10m]) / rate(payment_requests_total[10m])) < 0.99
-    for: 5m
+    for: 10m
     labels:
       severity: warning
       team: payments
@@ -103,7 +103,7 @@ groups:
       alert_type: threshold
     annotations:
       summary: "Payment success rate dropped below 99%"
-      description: "The ratio of successful payment transactions to total payment requests has dropped below 99% for more than 5 minutes. Investigate potential issues affecting payment success."
+      description: "The ratio of successful payment transactions to total payment requests has dropped below 99% for more than 10 minutes. Investigate potential issues affecting payment success. Consider automated rollback or circuit breaker if applicable."
       runbook: "https://internal-runbook.yara.com/payment-success-rate"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
@@ -120,7 +120,7 @@ groups:
       alert_type: threshold
     annotations:
       summary: "Payment gateway availability below 99.5%"
-      description: "The payment gateway availability metric has dropped below 99.5% for more than 10 minutes. Immediate investigation required."
+      description: "The payment gateway availability metric has dropped below 99.5% for more than 10 minutes. Immediate investigation required. Integrate with external gateway health checks to correlate alerts."
       runbook: "https://internal-runbook.yara.com/payment-gateway-availability"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
@@ -137,7 +137,7 @@ groups:
       alert_type: sustained_absence
     annotations:
       summary: "Sustained absence of payment requests metric"
-      description: "No payment requests metric has been received for more than 10 minutes. This may indicate a monitoring or service outage. Immediate investigation required."
+      description: "No payment requests metric has been received for more than 10 minutes. This may indicate a monitoring or service outage. Immediate investigation required. Consider automated remediation such as service restart."
       runbook: "https://internal-runbook.yara.com/payment-requests-absent"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
@@ -154,7 +154,7 @@ groups:
       alert_type: threshold
     annotations:
       summary: "Elevated payment error rate detected by payment method"
-      description: "The payment error rate for one or more payment methods has exceeded 0.1% for more than 5 minutes. Investigate potential issues specific to payment methods."
+      description: "The payment error rate for one or more payment methods has exceeded 0.1% for more than 5 minutes. Investigate potential issues specific to payment methods. Consider alert grouping by payment method to avoid flooding."
       runbook: "https://internal-runbook.yara.com/payment-errors-by-method"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
