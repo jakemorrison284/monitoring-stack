@@ -1,5 +1,3 @@
-# Alert Rules for restore_postgres.sh
-
 alerts:
   - name: RestoreFailure
     condition: count() > 2
