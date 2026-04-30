@@ -1,0 +1,43 @@
+# Dynamic Threshold Alert Rules for Cost Monitoring Improvements
+
+groups:
+  - name: dynamic-threshold-alerts
+    rules:
+      - alert: DynamicCPUUsageSpike
+        expr: rate(cpu_usage[10m]) > 1.5 * avg_over_time(cpu_usage[7d])
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Dynamic CPU Usage Spike Detected"
+          description: "CPU usage has exceeded 150% of the 7-day moving average for over 10 minutes. Investigate potential issues or scaling needs."
+
+      - alert: DynamicMemoryUsageSpike
+        expr: rate(memory_usage[10m]) > 1.5 * avg_over_time(memory_usage[7d])
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Dynamic Memory Usage Spike Detected"
+          description: "Memory usage has exceeded 150% of the 7-day moving average for over 10 minutes. Investigate potential issues or scaling needs."
+
+      - alert: UnderutilizedResource
+        expr: avg_over_time(resource_utilization[7d]) < 0.3
+        for: 168h # 1 week
+        labels:
+          severity: info
+        annotations:
+          summary: "Underutilized Resource Alert"
+          description: "Resource utilization has been below 30% for one week. Consider downsizing or decommissioning."
+
+      - alert: UnexpectedCostIncrease
+        expr: (current_month_cost / previous_month_cost) > 1.2
+        for: 1d
+        labels:
+          severity: critical
+        annotations:
+          summary: "Unexpected Cost Increase"
+          description: "Monthly cost has increased more than 20% compared to the previous month. Immediate investigation required."
+
+      # Alert correlation is typically handled by the alert manager and not expressed in Prometheus rules directly.
+      # Ensure your alert manager config supports grouping and deduplication.
