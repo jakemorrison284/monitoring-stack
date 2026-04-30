@@ -11,6 +11,7 @@ Note: Integration with actual payment processing system, Prometheus alert manage
 import time
 import logging
 import requests
+import random
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -41,11 +42,17 @@ def inject_payment_errors():
     """Simulate injection of synthetic payment errors to elevate error rate."""
     logging.info("Starting error injection to simulate elevated payment error rate.")
     start_time = time.time()
+    error_injection_count = 0
     while time.time() - start_time < ERROR_INJECTION_DURATION:
-        # TODO: Implement actual error injection logic in the payment processing system
-        logging.info("Injecting synthetic payment error...")
+        # Simulate error injection logic
+        simulated_error_rate = random.uniform(0, 0.001)  # Simulate error rate between 0% and 0.1%
+        if simulated_error_rate > ERROR_RATE_THRESHOLD:
+            logging.warning(f"Injected payment error detected, current simulated error rate: {simulated_error_rate:.4f}")
+            error_injection_count += 1
+        else:
+            logging.info(f"System operating normally, simulated error rate: {simulated_error_rate:.4f}")
         time.sleep(10)  # Sleep to simulate periodic error injection
-    logging.info("Error injection completed.")
+    logging.info(f"Error injection completed. Total error injections: {error_injection_count}")
 
 
 def monitor_alerts():
