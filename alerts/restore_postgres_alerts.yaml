@@ -4,7 +4,7 @@ alerts:
   - name: RestoreFailure
     condition: count() > 0
     query: |
-      source="restore_postgres.sh" AND message:"Database restoration failed"
+      source="restore_postgres.sh" AND message:"Database restoration failed" AND level:"error"
     timeframe: 5m
     severity: critical
     notify: ["pagerduty", "email", "slack"]
@@ -12,7 +12,7 @@ alerts:
   - name: BackupFileInvalid
     condition: count() > 0
     query: |
-      source="restore_postgres.sh" AND message:"Backup file"
+      source="restore_postgres.sh" AND (message:"Backup file invalid" OR message:"Backup file corrupted")
     timeframe: 10m
     severity: warning
     notify: ["email", "slack"]
@@ -20,7 +20,7 @@ alerts:
   - name: NotificationScriptFailure
     condition: count() > 0
     query: |
-      source="restore_postgres.sh" AND message:"Error" AND message:"notification"
+      source="restore_postgres.sh" AND message:"Error" AND message:"notification script"
     timeframe: 5m
     severity: warning
     notify: ["email", "slack"]
@@ -28,7 +28,7 @@ alerts:
   - name: DryRunExecuted
     condition: count() > 0
     query: |
-      source="restore_postgres.sh" AND message:"Dry run"
+      source="restore_postgres.sh" AND message:"Dry run executed successfully"
     timeframe: 1h
     severity: informational
     notify: ["email", "slack"]
