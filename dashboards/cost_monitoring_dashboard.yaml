@@ -1,0 +1,70 @@
+apiVersion: 1
+kind: Dashboard
+metadata:
+  name: cost-monitoring-dashboard
+spec:
+  title: Cost Monitoring Dashboard
+  panels:
+    - type: graph
+      title: Daily Cost Trends
+      targets:
+        - expr: sum(cost_daily) by (resource)
+      xaxis:
+        mode: time
+      yaxis:
+        format: currency
+
+    - type: heatmap
+      title: Resource Utilization Heatmap
+      targets:
+        - expr: container_cpu_usage_seconds_total
+      xaxis:
+        mode: time
+      yaxis:
+        format: short
+
+    - type: graph
+      title: Alert Frequency by Type and Severity
+      targets:
+        - expr: count_over_time(alerts[1d]) by (alertname, severity)
+
+    - type: graph
+      title: Network Egress Volume
+      targets:
+        - expr: sum(network_egress_bytes) by (resource)
+      xaxis:
+        mode: time
+      yaxis:
+        format: bytes
+
+    - type: graph
+      title: Storage Access Frequency
+      targets:
+        - expr: sum(storage_accesses_total) by (resource)
+      xaxis:
+        mode: time
+      yaxis:
+        format: short
+
+    - type: graph
+      title: Predicted Resource Usage
+      targets:
+        - expr: predicted_resource_usage
+      xaxis:
+        mode: time
+      yaxis:
+        format: short
+
+    - type: graph
+      title: Autoscaling Events
+      targets:
+        - expr: sum(autoscaling_events_total) by (resource)
+      xaxis:
+        mode: time
+      yaxis:
+        format: short
+
+    - type: table
+      title: Recent Optimization Actions
+      targets:
+        - expr: recent_optimization_actions
