@@ -5,12 +5,14 @@ alerts:
       source="restore_postgres.sh" AND message:"Database restoration failed" AND level:"error"
     timeframe: 5m
     severity: critical
-    notify: ["pagerduty", "email", "slack", "sms"]
+    notify: ["pagerduty", "email", "slack", "sms", "opsgenie", "microsoft-teams"]
     escalation:
       - after: 10m
         notify: ["on-call-manager"]
       - after: 20m
         notify: ["senior-engineer", "team-lead"]
+      - after: 30m
+        notify: ["engineering-director"]
     annotations:
       summary: "Critical failure in PostgreSQL restore process"
       description: "The PostgreSQL restoration process failed, indicating a potential outage or data loss risk. Immediate investigation is required."
@@ -23,7 +25,7 @@ alerts:
       source="restore_postgres.sh" AND (message:"Backup file invalid" OR message:"Backup file corrupted")
     timeframe: 10m
     severity: warning
-    notify: ["email", "slack"]
+    notify: ["email", "slack", "opsgenie"]
     annotations:
       summary: "Invalid or corrupted backup file detected"
       description: "The backup file used for restoration is either invalid or corrupted. This may affect the restore process and data integrity."
@@ -35,7 +37,7 @@ alerts:
       source="restore_postgres.sh" AND message:"Error" AND message:"notification script"
     timeframe: 5m
     severity: warning
-    notify: ["email", "slack"]
+    notify: ["email", "slack", "opsgenie"]
     annotations:
       summary: "Failure in notification script during restore process"
       description: "An error occurred in the notification script while running the restore process, potentially impacting alerting and communication."
@@ -59,7 +61,7 @@ alerts:
       source="restore_postgres.sh" AND message:"Dry run executed successfully"
     timeframe: 2h
     severity: warning
-    notify: ["email", "slack", "sms"]
+    notify: ["email", "slack", "sms", "opsgenie"]
     annotations:
       summary: "Dry run of PostgreSQL restore not detected"
       description: "No dry run of the PostgreSQL restore process has been detected in the last 2 hours. This may indicate readiness issues."
@@ -71,7 +73,7 @@ alerts:
       source="restore_postgres.sh" AND message:"Restore job completed"
     timeframe: 1h
     severity: warning
-    notify: ["email", "slack"]
+    notify: ["email", "slack", "opsgenie"]
     annotations:
       summary: "PostgreSQL restore duration exceeded expected threshold"
       description: "The duration of the PostgreSQL restore job has exceeded 1 hour, indicating potential performance issues or blocking."
@@ -83,7 +85,7 @@ alerts:
       source="restore_postgres.sh" AND message:"Restore job status"
     timeframe: 1h
     severity: warning
-    notify: ["email", "slack"]
+    notify: ["email", "slack", "opsgenie"]
     annotations:
       summary: "PostgreSQL restore success rate dropped below 95%"
       description: "The success rate of PostgreSQL restore jobs has dropped below 95% over the past hour. Immediate investigation is recommended."
