@@ -4,10 +4,10 @@ groups:
   # Informational alert for very low-level payment error anomalies - tuned to reduce noise
   # Removed alert InfoLowPaymentErrorRateAlert due to potential alert fatigue as noted in TODO
 
-  # Warning alert for elevated payment error rate - threshold slightly increased and duration increased to reduce noise
+  # Warning alert for elevated payment error rate - threshold increased and duration increased to reduce noise
   - alert: WarningPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0008
-    for: 15m
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.001
+    for: 20m
     labels:
       severity: warning
       team: payments
@@ -15,11 +15,11 @@ groups:
       alert_type: threshold
     annotations: {
       summary: "Elevated payment error rate detected",
-      description: "The payment error rate has exceeded 0.0008 for 15 minutes. Please investigate potential issues before escalation.",
+      description: "The payment error rate has exceeded 0.001 for 20 minutes. Please investigate potential issues before escalation.",
       runbook: "https://internal-runbook.yara.com/payment-errors",
       contact: "On-call Rotation: Use on-call system to determine contact",
       escalation: "If not resolved in 20 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0008."
+      recovery: "Alert resolved when payment error rate returns below 0.001."
     }
 
   # Consolidated critical alert for high payment error rate or duplicate payments - unchanged
@@ -47,7 +47,7 @@ groups:
   # Warning alert for high payment latency - duration increased to reduce noise
   - alert: PaymentLatencyAlert
     expr: avg_over_time(payment_latency_seconds[5m]) > 1.2
-    for: 5m
+    for: 7m
     labels:
       severity: warning
       team: payments
@@ -93,10 +93,10 @@ groups:
       summary: "Grouped alert for payment issues to reduce alert fatigue"
       description: "This alert groups payment-related alerts to suppress duplicate notifications and reduce alert noise for the on-call team. Regular review and tuning recommended."
 
-  # New alert for payment success rate
+  # New alert for payment success rate with increased duration
   - alert: PaymentSuccessRateAlert
     expr: (rate(payment_success_total[10m]) / rate(payment_requests_total[10m])) < 0.99
-    for: 5m
+    for: 7m
     labels:
       severity: warning
       team: payments
@@ -104,7 +104,7 @@ groups:
       alert_type: threshold
     annotations:
       summary: "Payment success rate dropped below 99%"
-      description: "The ratio of successful payment transactions to total payment requests has dropped below 99% for more than 5 minutes. Investigate potential issues affecting payment success."
+      description: "The ratio of successful payment transactions to total payment requests has dropped below 99% for more than 7 minutes. Investigate potential issues affecting payment success."
       runbook: "https://internal-runbook.yara.com/payment-success-rate"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
@@ -163,8 +163,8 @@ groups:
 
 # Alert dependencies to reduce noise: lower severity alerts suppressed if higher severity alert firing
   - alert: WarningPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0008 and ignoring(alertname) (absent(CriticalPaymentIssuesAlert) or CriticalPaymentIssuesAlert == 0)
-    for: 15m
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.001 and ignoring(alertname) (absent(CriticalPaymentIssuesAlert) or CriticalPaymentIssuesAlert == 0)
+    for: 20m
     labels:
       severity: warning
       team: payments
@@ -172,11 +172,11 @@ groups:
       alert_type: threshold
     annotations: {
       summary: "Elevated payment error rate detected",
-      description: "The payment error rate has exceeded 0.0008 for 15 minutes, but no critical payment issues alert is firing. Please investigate potential issues before escalation.",
+      description: "The payment error rate has exceeded 0.001 for 20 minutes, but no critical payment issues alert is firing. Please investigate potential issues before escalation.",
       runbook: "https://internal-runbook.yara.com/payment-errors",
       contact: "On-call Rotation: Use on-call system to determine contact",
       escalation: "If not resolved in 20 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0008."
+      recovery: "Alert resolved when payment error rate returns below 0.001."
     }
 
 # Additional labels for alert ownership and priority
