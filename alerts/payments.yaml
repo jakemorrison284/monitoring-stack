@@ -1,6 +1,22 @@
 groups:
 - name: payments-core
   rules:
+  - alert: WarningPaymentErrorRateAlert
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0002
+    for: 10m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+    annotations: {
+      summary: "Elevated payment error rate detected",
+      description: "The payment error rate has exceeded 0.0002 for 10 minutes. Please investigate potential issues before escalation.",
+      runbook: "https://valid-runbook-url.com/payment-errors",
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
+      recovery: "Alert resolved when payment error rate returns below 0.0002."
+    }
+
   - alert: CriticalPaymentsAlert
     expr: |
       rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0004 or
@@ -13,7 +29,7 @@ groups:
     annotations: {
       summary: "Critical payment issues detected",
       description: "High payment error rate or duplicate payment transactions detected. Immediate investigation required.",
-      runbook: "https://example.com/runbook/payment-errors",
+      runbook: "https://valid-runbook-url.com/payment-errors",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 15 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
@@ -29,7 +45,7 @@ groups:
     annotations: {
       summary: "High payment latency detected",
       description: "The average payment latency exceeds 1.5 seconds. Please investigate potential bottlenecks in the payment processing pipeline.",
-      runbook: "https://example.com/runbook/payment-latency",
+      runbook: "https://valid-runbook-url.com/payment-latency",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 5 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when average payment latency returns below 1.5 seconds."
