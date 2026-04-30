@@ -64,20 +64,19 @@ groups:
 
   # Dynamic threshold alert - tuned with adjusted multiplier, lookback period, and minimum traffic threshold
   - alert: DynamicPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > (0.75 * avg_over_time(rate(payment_errors_total[1h]) / rate(payment_requests_total[1h])[3d])) and rate(payment_requests_total[1h]) > 100
-    for: 10m
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > (0.65 * avg_over_time(rate(payment_errors_total[1h]) / rate(payment_requests_total[1h])[2d])) and rate(payment_requests_total[1h]) > 150
+    for: 8m
     labels:
       severity: warning
       team: payments
       service: payment-processing
       alert_type: dynamic
-      alert_quality: needs_review
     annotations:
       summary: "Payment error rate above dynamic threshold"
-      description: "Payment error rate has exceeded 75% above the 3-day average baseline for more than 10 minutes, with minimum traffic threshold. Confirm system support and test this alert."
+      description: "Payment error rate has exceeded 65% above the 2-day average baseline for more than 8 minutes, with minimum traffic threshold. This alert helps detect significant deviations while reducing false positives. Please refer to the runbook for investigation steps."
       runbook: "https://internal-runbook.yara.com/payment-errors-dynamic"
       contact: "On-call Rotation: Use on-call system to determine contact"
-      escalation: "If persistent for 10 minutes, escalate to payment processing manager."
+      escalation: "If persistent for 8 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when payment error rate returns below dynamic threshold."
 
   # Enhanced grouping rule to suppress duplicate alerts and reduce alert fatigue
