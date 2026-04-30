@@ -14,7 +14,7 @@ alerts:
     annotations:
       summary: "Critical failure in PostgreSQL restore process"
       description: "The PostgreSQL restoration process failed, indicating a potential outage or data loss risk. Immediate investigation is required."
-      runbook: "https://corrected-runbook-url.com/restore-postgres-failure"
+      runbook: "https://internal-runbook.yara.com/restore-postgres-failure"
       review: "Review and tune alert queries and thresholds quarterly."
 
   - name: BackupFileInvalid
@@ -27,7 +27,7 @@ alerts:
     annotations:
       summary: "Invalid or corrupted backup file detected"
       description: "The backup file used for restoration is either invalid or corrupted. This may affect the restore process and data integrity."
-      runbook: "https://corrected-runbook-url.com/backup-file-invalid"
+      runbook: "https://internal-runbook.yara.com/backup-file-invalid"
 
   - name: NotificationScriptFailure
     condition: count() > 2
@@ -39,7 +39,7 @@ alerts:
     annotations:
       summary: "Failure in notification script during restore process"
       description: "An error occurred in the notification script while running the restore process, potentially impacting alerting and communication."
-      runbook: "https://corrected-runbook-url.com/notification-script-failure"
+      runbook: "https://internal-runbook.yara.com/notification-script-failure"
 
   - name: DryRunExecuted
     condition: count() > 0
@@ -51,7 +51,7 @@ alerts:
     annotations:
       summary: "Dry run of PostgreSQL restore executed successfully"
       description: "A dry run of the PostgreSQL restore process was executed successfully, indicating readiness for actual restores."
-      runbook: "https://corrected-runbook-url.com/dry-run-success"
+      runbook: "https://internal-runbook.yara.com/dry-run-success"
 
   - name: DryRunMissing
     condition: count() == 0
@@ -63,7 +63,7 @@ alerts:
     annotations:
       summary: "Dry run of PostgreSQL restore not detected"
       description: "No dry run of the PostgreSQL restore process has been detected in the last 2 hours. This may indicate readiness issues."
-      runbook: "https://corrected-runbook-url.com/dry-run-monitoring"
+      runbook: "https://internal-runbook.yara.com/dry-run-monitoring"
 
   - name: RestoreDurationExceeded
     condition: avg(duration) > 1h
@@ -75,7 +75,7 @@ alerts:
     annotations:
       summary: "PostgreSQL restore duration exceeded expected threshold"
       description: "The duration of the PostgreSQL restore job has exceeded 1 hour, indicating potential performance issues or blocking."
-      runbook: "https://corrected-runbook-url.com/restore-duration-exceeded"
+      runbook: "https://internal-runbook.yara.com/restore-duration-exceeded"
 
   - name: RestoreSuccessRateDrop
     condition: avg(success) < 0.95
@@ -87,7 +87,7 @@ alerts:
     annotations:
       summary: "PostgreSQL restore success rate dropped below 95%"
       description: "The success rate of PostgreSQL restore jobs has dropped below 95% over the past hour. Immediate investigation is recommended."
-      runbook: "https://corrected-runbook-url.com/restore-success-rate-drop"
+      runbook: "https://internal-runbook.yara.com/restore-success-rate-drop"
 
   - name: RestoreAlertsGroup
     condition: RestoreFailure or BackupFileInvalid or NotificationScriptFailure or RestoreDurationExceeded or RestoreSuccessRateDrop
