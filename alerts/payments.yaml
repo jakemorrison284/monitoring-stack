@@ -1,3 +1,6 @@
+# Enhancement proposals implementation for payments.yaml
+# Added comments for continuous tuning, additional notification channels, and escalation path improvements
+
 groups:
 - name: payments-core
   rules:
@@ -33,12 +36,14 @@ groups:
       team: payments
       service: payment-processing
       alert_type: threshold
+      owner: payments-team
+      priority: P1
     annotations: {
       summary: "Critical payment issues detected",
       description: "High payment error rate (>0.001) or duplicate payment transactions (>3 in 5 minutes) detected. Immediate investigation required.",
       runbook: "https://internal-runbook.yara.com/payment-errors-critical",
       contact: "On-call Rotation: Use on-call system to determine contact",
-      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager. Additional notification channels include Microsoft Teams and SMS for critical alerts.",
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
 
@@ -72,7 +77,7 @@ groups:
       alert_quality: needs_review
     annotations:
       summary: "Payment error rate above dynamic threshold"
-      description: "Payment error rate has exceeded 75% above the 3-day average baseline for more than 10 minutes, with minimum traffic threshold. Confirm system support and test this alert."
+      description: "Payment error rate has exceeded 75% above the 3-day average baseline for more than 10 minutes, with minimum traffic threshold. Confirm system support and test this alert. Regular quarterly review and tuning recommended."
       runbook: "https://internal-runbook.yara.com/payment-errors-dynamic"
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If persistent for 10 minutes, escalate to payment processing manager."
@@ -123,7 +128,7 @@ groups:
       description: "The payment gateway availability metric has dropped below 99.5% for more than 10 minutes. Immediate investigation required."
       runbook: "https://internal-runbook.yara.com/payment-gateway-availability"
       contact: "On-call Rotation: Use on-call system to determine contact"
-      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager. Additional notification channels include Microsoft Teams and SMS for critical alerts."
       recovery: "Alert resolved when payment gateway availability returns above 99.5%."
 
   # New alert for sustained absence of payment requests metric
@@ -140,7 +145,7 @@ groups:
       description: "No payment requests metric has been received for more than 10 minutes. This may indicate a monitoring or service outage. Immediate investigation required."
       runbook: "https://internal-runbook.yara.com/payment-requests-absent"
       contact: "On-call Rotation: Use on-call system to determine contact"
-      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager. Additional notification channels include Microsoft Teams and SMS for critical alerts."
       recovery: "Alert resolved when payment requests metric is received again."
 
   # New multi-dimensional alert for payment error rate by payment method
@@ -196,7 +201,7 @@ groups:
       description: "High payment error rate (>0.001) or duplicate payment transactions (>3 in 5 minutes) detected. Immediate investigation required.",
       runbook: "https://internal-runbook.yara.com/payment-errors-critical",
       contact: "On-call Rotation: Use on-call system to determine contact",
-      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager. Additional notification channels include Microsoft Teams and SMS for critical alerts.",
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
 

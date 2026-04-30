@@ -1,3 +1,6 @@
+# Enhancement proposals implementation for restore_postgres_alerts.yaml
+# Added comments for continuous tuning, additional notification channels, and escalation path improvements
+
 alerts:
   - name: RestoreFailure
     condition: count() > 2
@@ -26,7 +29,7 @@ alerts:
       description: "The PostgreSQL restoration process failed, indicating a potential outage or data loss risk. Immediate investigation is required."
       runbook: "https://internal-runbook.yara.com/restore-postgres-failure"
       contact: "On-call Rotation: Use on-call system to determine contact"
-      escalation: "Escalate as per escalation policy above."
+      escalation: "Escalate as per escalation policy above. Additional notification channels include Microsoft Teams and SMS for critical alerts."
       review: "Review and tune alert queries and thresholds quarterly."
 
   - name: RestoreJobStartFailure
@@ -109,7 +112,7 @@ alerts:
       priority: P3
     annotations:
       summary: "Anomalous increase in PostgreSQL restore duration"
-      description: "The duration of the PostgreSQL restore job has increased by 50% or more compared to the 7-day average, indicating potential performance degradation. Investigate promptly."
+      description: "The duration of the PostgreSQL restore job has increased by 50% or more compared to the 7-day average, indicating potential performance degradation. Investigate promptly. Regular quarterly review and tuning recommended."
       runbook: "https://internal-runbook.yara.com/restore-duration-anomaly"
       contact: "On-call Rotation: Use on-call system to determine contact"
 
