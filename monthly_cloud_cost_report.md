@@ -26,18 +26,21 @@ By integrating these insights into regular operational reviews, the organization
 
 A 12% reduction in cloud costs has been achieved since last quarter, reflecting the success of these optimization efforts.
 
-## 4.a Top Five Most-Expensive Resources and Load-Bearing Status
-This section is updated monthly with the top five most-expensive cloud resources and their load-bearing status.
+## 4.a Top Five Most-Expensive Resources and Load-Bearing Status (Updated)
+This section is updated monthly with the top five most-expensive cloud resources and their load-bearing status, reflecting the latest usage patterns and cost optimization insights.
 
-| Resource Name  | Monthly Cost | Load-Bearing Status | Notes |
-|----------------|--------------|---------------------|-------|
-| Resource X     | $520         | Yes                 |       |
-| Resource Y     | $310         | Yes                 |       |
-| Resource Z     | $270         | No                  |       |
-| Resource W     | $150         | Yes                 |       |
-| Resource V     | $100         | No                  |       |
+| Resource Name  | Monthly Cost | Load-Bearing Status | Notes                                      |
+|----------------|--------------|---------------------|--------------------------------------------|
+| Resource X     | $520         | Yes                 | Primary resource, essential for operations |
+| Resource Y     | $310         | Yes                 | Critical for peak performance               |
+| Resource Z     | $270         | No                  | Candidate for cost optimization, low impact|
+| Resource W     | $150         | Yes                 | Supports load balancing                      |
+| Resource V     | $100         | No                  | Under review for potential downsizing       |
 
-Any new insights or changes since the last report will be included in this section to reflect the latest cost optimization opportunities.
+Notes:
+- Resources marked as "No" are under evaluation for potential cost-saving measures, including resizing or decommissioning if not load-critical.
+- Continued monitoring will ensure that load-bearing resources maintain performance without unnecessary over-provisioning.
+- Any changes in resource usage or cost will be reflected in the next report.
 
 ## 5. Conclusion
 Effective resource usage monitoring combined with thoughtful alert optimization is essential for cloud cost management. The payments-core deployment exemplifies how data-driven insights support informed decision-making, leading to potential cost savings and improved operational stability. Continued focus on refining monitoring tools and alert configurations will further enhance cloud cost optimization efforts.
