@@ -45,4 +45,26 @@ The proposed adjustments aim to optimize the alert system by reducing unnecessar
 
 ---
 
-This report serves as formal documentation of the recommendations for adjustments to the alert configurations based on recent incident observations.
+## Failover Drill Insights
+
+### Challenges Encountered
+- Coordination delays between cross-functional teams caused slower-than-expected failover initiation.
+- Incomplete documentation on some failover procedures led to confusion during execution.
+- Monitoring alerts were not fully aligned with failover event states, causing alert noise that distracted responders.
+- Some dependent services experienced brief outages due to configuration synchronization issues during the failover.
+
+### Adjustments Made During the Drill
+- Established a dedicated failover coordinator role to improve communication and reduce coordination delays.
+- Updated failover runbooks with clearer step-by-step instructions and contact points.
+- Adjusted monitoring alert thresholds and silencing rules specifically for failover scenarios to minimize unnecessary noise.
+- Improved automation for configuration synchronization across dependent services to reduce manual intervention.
+
+### What We Learned
+- Clear roles and responsibilities are critical to execute failover smoothly under pressure.
+- Comprehensive and easily accessible runbooks significantly reduce confusion and execution time.
+- Aligning monitoring and alerting systems with failover states helps responders focus on critical issues.
+- Automation and pre-validated configurations are key to minimizing service disruption during failover.
+
+---
+
+This report serves as formal documentation of the recommendations for adjustments to the alert configurations based on recent incident observations and insights from the recent failover drill.
