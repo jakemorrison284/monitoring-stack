@@ -84,7 +84,7 @@ groups:
       WarningPaymentErrorRateAlert or CriticalPaymentIssuesAlert or PaymentLatencyAlert or DynamicPaymentErrorRateAlert or PaymentSuccessRateAlert or PaymentRequestsAbsentAlert or PaymentErrorRateByMethodAlert
     for: 0m
     labels:
-      severity: info
+      severity: none
       team: payments
       service: payment-processing
       alert_type: threshold
@@ -160,3 +160,43 @@ groups:
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when payment error rates return below threshold for all payment methods."
 }
+
+# Alert dependencies to reduce noise: lower severity alerts suppressed if higher severity alert firing
+  - alert: WarningPaymentErrorRateAlert
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0006 and ignoring(alertname) (absent(CriticalPaymentIssuesAlert) or CriticalPaymentIssuesAlert == 0)
+    for: 10m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations: {
+      summary: "Elevated payment error rate detected",
+      description: "The payment error rate has exceeded 0.0006 for 10 minutes, but no critical payment issues alert is firing. Please investigate potential issues before escalation.",
+      runbook: "https://internal-runbook.yara.com/payment-errors",
+      contact: "On-call Rotation: Use on-call system to determine contact",
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager.",
+      recovery: "Alert resolved when payment error rate returns below 0.0006."
+    }
+
+# Additional labels for alert ownership and priority
+  - alert: CriticalPaymentIssuesAlert
+    expr: |
+      rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.001 or
+      rate(duplicate_payments_total[5m]) > 3
+    for: 5m
+    labels:
+      severity: critical
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+      owner: payments-team
+      priority: P1
+    annotations: {
+      summary: "Critical payment issues detected",
+      description: "High payment error rate (>0.001) or duplicate payment transactions (>3 in 5 minutes) detected. Immediate investigation required.",
+      runbook: "https://internal-runbook.yara.com/payment-errors-critical",
+      contact: "On-call Rotation: Use on-call system to determine contact",
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
+      recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
+    }
