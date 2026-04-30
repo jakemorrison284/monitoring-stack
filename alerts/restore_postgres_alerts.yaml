@@ -13,10 +13,18 @@ alerts:
         notify: ["senior-engineer", "team-lead"]
       - after: 30m
         notify: ["engineering-director"]
+    labels:
+      team: db-restore
+      service: postgres
+      alert_type: failure
+      owner: db-restore-team
+      priority: P1
     annotations:
       summary: "Critical failure in PostgreSQL restore process"
       description: "The PostgreSQL restoration process failed, indicating a potential outage or data loss risk. Immediate investigation is required."
       runbook: "https://internal-runbook.yara.com/restore-postgres-failure"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "Escalate as per escalation policy above."
       review: "Review and tune alert queries and thresholds quarterly."
 
   - name: BackupFileInvalid
@@ -26,10 +34,18 @@ alerts:
     timeframe: 10m
     severity: warning
     notify: ["email", "slack", "opsgenie"]
+    labels:
+      team: db-restore
+      service: postgres
+      alert_type: warning
+      owner: db-restore-team
+      priority: P3
     annotations:
       summary: "Invalid or corrupted backup file detected"
       description: "The backup file used for restoration is either invalid or corrupted. This may affect the restore process and data integrity."
       runbook: "https://internal-runbook.yara.com/backup-file-invalid"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 30 minutes, escalate to db-restore-team lead."
 
   - name: NotificationScriptFailure
     condition: count() > 2
@@ -38,10 +54,18 @@ alerts:
     timeframe: 5m
     severity: warning
     notify: ["email", "slack", "opsgenie"]
+    labels:
+      team: db-restore
+      service: postgres
+      alert_type: warning
+      owner: db-restore-team
+      priority: P3
     annotations:
       summary: "Failure in notification script during restore process"
       description: "An error occurred in the notification script while running the restore process, potentially impacting alerting and communication."
       runbook: "https://internal-runbook.yara.com/notification-script-failure"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 30 minutes, escalate to db-restore-team lead."
 
   - name: DryRunExecuted
     condition: count() > 0
@@ -50,10 +74,17 @@ alerts:
     timeframe: 1h
     severity: informational
     notify: ["email", "slack"]
+    labels:
+      team: db-restore
+      service: postgres
+      alert_type: info
+      owner: db-restore-team
+      priority: P4
     annotations:
       summary: "Dry run of PostgreSQL restore executed successfully"
       description: "A dry run of the PostgreSQL restore process was executed successfully, indicating readiness for actual restores."
       runbook: "https://internal-runbook.yara.com/dry-run-success"
+      contact: "On-call Rotation: Use on-call system to determine contact"
 
   - name: DryRunMissing
     condition: count() == 0
@@ -62,10 +93,18 @@ alerts:
     timeframe: 2h
     severity: warning
     notify: ["email", "slack", "sms", "opsgenie"]
+    labels:
+      team: db-restore
+      service: postgres
+      alert_type: warning
+      owner: db-restore-team
+      priority: P3
     annotations:
       summary: "Dry run of PostgreSQL restore not detected"
       description: "No dry run of the PostgreSQL restore process has been detected in the last 2 hours. This may indicate readiness issues."
       runbook: "https://internal-runbook.yara.com/dry-run-monitoring"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 30 minutes, escalate to db-restore-team lead."
 
   - name: RestoreDurationExceeded
     condition: avg(duration) > 1h
@@ -74,10 +113,18 @@ alerts:
     timeframe: 1h
     severity: warning
     notify: ["email", "slack", "opsgenie"]
+    labels:
+      team: db-restore
+      service: postgres
+      alert_type: warning
+      owner: db-restore-team
+      priority: P3
     annotations:
       summary: "PostgreSQL restore duration exceeded expected threshold"
       description: "The duration of the PostgreSQL restore job has exceeded 1 hour, indicating potential performance issues or blocking."
       runbook: "https://internal-runbook.yara.com/restore-duration-exceeded"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 30 minutes, escalate to db-restore-team lead."
 
   - name: RestoreSuccessRateDrop
     condition: avg(success) < 0.95
@@ -86,29 +133,39 @@ alerts:
     timeframe: 1h
     severity: warning
     notify: ["email", "slack", "opsgenie"]
+    labels:
+      team: db-restore
+      service: postgres
+      alert_type: warning
+      owner: db-restore-team
+      priority: P3
     annotations:
       summary: "PostgreSQL restore success rate dropped below 95%"
       description: "The success rate of PostgreSQL restore jobs has dropped below 95% over the past hour. Immediate investigation is recommended."
       runbook: "https://internal-runbook.yara.com/restore-success-rate-drop"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 30 minutes, escalate to db-restore-team lead."
 
   - name: RestoreAlertsGroup
     condition: RestoreFailure or BackupFileInvalid or NotificationScriptFailure or RestoreDurationExceeded or RestoreSuccessRateDrop
     timeframe: 5m
-    severity: info
+    severity: none
     notify: ["email", "slack"]
     annotations:
       summary: "Grouped alert to reduce alert fatigue for PostgreSQL restore issues"
       description: "This alert groups multiple restore-related alerts to reduce duplicate notifications."
+      contact: "On-call Rotation: Use on-call system to determine contact"
 
   - name: RestoreAlertsSuppression
     condition: RestoreFailure
     suppress: [BackupFileInvalid, NotificationScriptFailure]
     timeframe: 10m
-    severity: info
+    severity: none
     notify: []
     annotations:
       summary: "Suppression of related restore alerts when critical failure occurs"
       description: "Suppresses BackupFileInvalid and NotificationScriptFailure alerts for 10 minutes when RestoreFailure is active to reduce noise."
+      contact: "On-call Rotation: Use on-call system to determine contact"
 
 # Reminder: Periodically review and tune alert queries, thresholds, and timeframes to minimize false positives and improve detection accuracy.
 # Consider expanding notification channels and escalation paths for critical alerts.
