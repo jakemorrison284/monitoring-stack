@@ -29,17 +29,19 @@ A 12% reduction in cloud costs has been achieved since last quarter, reflecting 
 ## 4.a Top Five Most-Expensive Resources and Load-Bearing Status (Updated)
 This section is updated monthly with the top five most-expensive cloud resources and their load-bearing status, reflecting the latest usage patterns and cost optimization insights.
 
-| Resource Name  | Monthly Cost | Load-Bearing Status | Notes                                      |
-|----------------|--------------|---------------------|--------------------------------------------|
-| Resource X     | $520         | Yes                 | Primary resource, essential for operations |
-| Resource Y     | $310         | Yes                 | Critical for peak performance               |
-| Resource Z     | $270         | No                  | Candidate for cost optimization, low impact|
-| Resource W     | $150         | Yes                 | Supports load balancing                      |
-| Resource V     | $100         | No                  | Under review for potential downsizing       |
+| Resource Name  | Resource Type | Monthly Cost | Cost Trend | Load-Bearing Status | Utilization | Notes                                      |
+|----------------|---------------|--------------|------------|---------------------|-------------|--------------------------------------------|
+| Resource X     | VM Instance   | $520         | +5%        | Yes                 | 85%         | Primary resource, essential for operations |
+| Resource Y     | Storage Bucket| $310         | Stable     | Yes                 | 78%         | Critical for peak performance               |
+| Resource Z     | Database      | $270         | -3%        | No                  | 40%         | Candidate for cost optimization, low impact|
+| Resource W     | VM Instance   | $150         | +2%        | Yes                 | 65%         | Supports load balancing                      |
+| Resource V     | CDN           | $100         | Stable     | No                  | N/A         | Under review for potential downsizing       |
 
 Notes:
 - Resources marked as "No" are under evaluation for potential cost-saving measures, including resizing or decommissioning if not load-critical.
 - Continued monitoring will ensure that load-bearing resources maintain performance without unnecessary over-provisioning.
+- Cost trend indicates the change in monthly cost compared to the previous month.
+- Utilization is expressed as a percentage of capacity or usage where applicable; "N/A" indicates data not available.
 - Any changes in resource usage or cost will be reflected in the next report.
 
 ## 5. Conclusion
