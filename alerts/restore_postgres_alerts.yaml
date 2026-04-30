@@ -9,6 +9,8 @@ alerts:
     escalation:
       - after: 10m
         notify: ["on-call-manager"]
+      - after: 20m
+        notify: ["senior-engineer", "team-lead"]
     annotations:
       summary: "Critical failure in PostgreSQL restore process"
       description: "The PostgreSQL restoration process failed, indicating a potential outage or data loss risk. Immediate investigation is required."
@@ -63,8 +65,32 @@ alerts:
       description: "No dry run of the PostgreSQL restore process has been detected in the last 2 hours. This may indicate readiness issues."
       runbook: "https://corrected-runbook-url.com/dry-run-monitoring"
 
+  - name: RestoreDurationExceeded
+    condition: avg(duration) > 1h
+    query: |
+      source="restore_postgres.sh" AND message:"Restore job completed"
+    timeframe: 1h
+    severity: warning
+    notify: ["email", "slack"]
+    annotations:
+      summary: "PostgreSQL restore duration exceeded expected threshold"
+      description: "The duration of the PostgreSQL restore job has exceeded 1 hour, indicating potential performance issues or blocking."
+      runbook: "https://corrected-runbook-url.com/restore-duration-exceeded"
+
+  - name: RestoreSuccessRateDrop
+    condition: avg(success) < 0.95
+    query: |
+      source="restore_postgres.sh" AND message:"Restore job status"
+    timeframe: 1h
+    severity: warning
+    notify: ["email", "slack"]
+    annotations:
+      summary: "PostgreSQL restore success rate dropped below 95%"
+      description: "The success rate of PostgreSQL restore jobs has dropped below 95% over the past hour. Immediate investigation is recommended."
+      runbook: "https://corrected-runbook-url.com/restore-success-rate-drop"
+
   - name: RestoreAlertsGroup
-    condition: RestoreFailure or BackupFileInvalid or NotificationScriptFailure
+    condition: RestoreFailure or BackupFileInvalid or NotificationScriptFailure or RestoreDurationExceeded or RestoreSuccessRateDrop
     timeframe: 5m
     severity: info
     notify: ["email", "slack"]
@@ -75,3 +101,6 @@ alerts:
 # Reminder: Periodically review and tune alert queries, thresholds, and timeframes to minimize false positives and improve detection accuracy.
 # Consider expanding notification channels and escalation paths for critical alerts.
 # Add alert correlation or suppression rules to reduce alert fatigue where appropriate.
+# Added alerts for restore duration and restore success rate drop.
+# Added additional escalation step for prolonged critical alerts.
+# Updated grouped alert to include new alerts.
