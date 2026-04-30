@@ -81,7 +81,7 @@ groups:
   # Enhanced grouping rule to suppress duplicate alerts and reduce alert fatigue
   - alert: PaymentsAlertsGroup
     expr: |
-      WarningPaymentErrorRateAlert or CriticalPaymentIssuesAlert or PaymentLatencyAlert or DynamicPaymentErrorRateAlert
+      WarningPaymentErrorRateAlert or CriticalPaymentIssuesAlert or PaymentLatencyAlert or DynamicPaymentErrorRateAlert or PaymentSuccessRateAlert or PaymentRequestsAbsentAlert or PaymentErrorRateByMethodAlert
     for: 0m
     labels:
       severity: info
