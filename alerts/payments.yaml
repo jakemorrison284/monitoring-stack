@@ -2,23 +2,7 @@ groups:
 - name: payments-core
   rules:
   # Informational alert for very low-level payment error anomalies - tuned to reduce noise
-  - alert: InfoLowPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.00015
-    for: 30m  # Increased duration further to reduce transient noise
-    labels:
-      severity: info
-      team: payments
-      service: payment-processing
-      alert_type: threshold
-      alert_quality: needs_review
-    annotations:
-      summary: "Low-level payment error anomaly detected"
-      description: "A low but persistent payment error rate above 0.00015 has been detected for 30 minutes. Early signal for potential issues. Validate threshold with historical data to minimize false positives."
-      runbook: "https://internal-runbook.yara.com/payment-errors-info"
-      contact: "On-call Rotation: Use on-call system to determine contact"
-      escalation: "No immediate escalation. Monitor and investigate if trend continues."
-      recovery: "Alert resolved when payment error rate returns below 0.00015."
-      note: "TODO: tune or delete this alert if it causes alert fatigue."
+  # Removed alert InfoLowPaymentErrorRateAlert due to potential alert fatigue as noted in TODO
 
   # Warning alert for elevated payment error rate - threshold slightly increased
   - alert: WarningPaymentErrorRateAlert
