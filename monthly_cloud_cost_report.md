@@ -24,6 +24,19 @@ Monitoring the payments-core deployment's resource usage reveals several opportu
 - Alert Management: Optimized alerting reduces unnecessary operational interventions, indirectly lowering costs associated with incident response.
 By integrating these insights into regular operational reviews, the organization can achieve a balanced approach to performance and cost efficiency.
 
+## 4.a Top Five Most-Expensive Resources and Load-Bearing Status
+This section will be updated monthly with the top five most-expensive cloud resources and their load-bearing status.
+
+| Resource Name | Monthly Cost | Load-Bearing Status | Notes |
+|---------------|--------------|---------------------|-------|
+| Resource 1    | $XXX.XX      | Yes/No              |       |
+| Resource 2    | $XXX.XX      | Yes/No              |       |
+| Resource 3    | $XXX.XX      | Yes/No              |       |
+| Resource 4    | $XXX.XX      | Yes/No              |       |
+| Resource 5    | $XXX.XX      | Yes/No              |       |
+
+Any new insights or changes since the last report will be included in this section to reflect the latest cost optimization opportunities.
+
 ## 5. Conclusion
 Effective resource usage monitoring combined with thoughtful alert optimization is essential for cloud cost management. The payments-core deployment exemplifies how data-driven insights support informed decision-making, leading to potential cost savings and improved operational stability. Continued focus on refining monitoring tools and alert configurations will further enhance cloud cost optimization efforts.
 
