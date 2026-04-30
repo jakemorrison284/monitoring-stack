@@ -1,34 +1,50 @@
 groups:
 - name: payments-core
   rules:
-  # Warning alert for elevated payment error rate
+  # Informational alert for very low-level payment error anomalies
+  - alert: InfoLowPaymentErrorRateAlert
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0001
+    for: 15m
+    labels:
+      severity: info
+      team: payments
+      service: payment-processing
+    annotations:
+      summary: "Low-level payment error anomaly detected"
+      description: "A low but persistent payment error rate above 0.0001 has been detected for 15 minutes. This is an early signal for potential issues."
+      runbook: "https://internal-runbook.yara.com/payment-errors-info"
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)"
+      escalation: "No immediate escalation. Monitor and investigate if trend continues."
+      recovery: "Alert resolved when payment error rate returns below 0.0001."
+
+  # Warning alert for elevated payment error rate (shortened for duration)
   - alert: WarningPaymentErrorRateAlert
     expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0005
-    for: 10m
+    for: 5m
     labels:
       severity: warning
       team: payments
       service: payment-processing
     annotations: {
       summary: "Elevated payment error rate detected",
-      description: "The payment error rate has exceeded 0.0005 for 10 minutes. Please investigate potential issues before escalation. This tuning is based on recent incident INC-2025-1109 and subsequent recommendations.",
+      description: "The payment error rate has exceeded 0.0005 for 5 minutes. Please investigate potential issues before escalation. This tuning is based on recent incident INC-2025-1109 and subsequent recommendations.",
       runbook: "https://internal-runbook.yara.com/payment-errors",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate returns below 0.0005."
     }
 
-  # Critical alert for very high payment error rate
+  # Critical alert for very high payment error rate (shortened for duration)
   - alert: CriticalPaymentErrorRateAlert
     expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.001
-    for: 2m
+    for: 1m
     labels:
       severity: critical
       team: payments
       service: payment-processing
     annotations: {
       summary: "Critical payment error rate detected",
-      description: "The payment error rate has exceeded 0.001 for 2 minutes. Immediate investigation required. This adjustment follows recent incident INC-2025-1109 and expert tuning recommendations.",
+      description: "The payment error rate has exceeded 0.001 for 1 minute. Immediate investigation required. This adjustment follows recent incident INC-2025-1109 and expert tuning recommendations.",
       runbook: "https://internal-runbook.yara.com/payment-errors-critical",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 3 minutes, escalate to the payment processing manager.",
@@ -54,10 +70,10 @@ groups:
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
 
-  # Warning alert for high payment latency
+  # Warning alert for high payment latency (shortened for duration)
   - alert: PaymentLatencyAlert
     expr: avg_over_time(payment_latency_seconds[5m]) > 1.2  # Adjusted threshold to 1.2 seconds for earlier detection
-    for: 2m
+    for: 1m
     labels: 
       severity: warning
       team: payments
@@ -71,11 +87,28 @@ groups:
       recovery: "Alert resolved when average payment latency returns below 1.2 seconds."
     }
 
+  # Dynamic threshold alert (example - requires system support)
+  - alert: DynamicPaymentErrorRateAlert
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > (0.5 * avg_over_time(rate(payment_errors_total[1h]) / rate(payment_requests_total[1h])[1d]))
+    for: 5m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+    annotations:
+      summary: "Payment error rate above dynamic threshold"
+      description: "Payment error rate has exceeded 50% above the daily average baseline."
+      runbook: "https://internal-runbook.yara.com/payment-errors-dynamic"
+      contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)"
+      escalation: "If persistent for 5 minutes, escalate to payment processing manager."
+      recovery: "Alert resolved when payment error rate returns below dynamic threshold."
+
   # Grouping rule to suppress duplicate alerts and reduce alert fatigue
   # This groups all payment-related alerts by team and service labels
+  # Regularly review and adjust grouping rules to optimize alert noise.
   - alert: PaymentsAlertsGroup
     expr: |
-      WarningPaymentErrorRateAlert or CriticalPaymentErrorRateAlert or CriticalPaymentsAlert or PaymentLatencyAlert
+      WarningPaymentErrorRateAlert or CriticalPaymentErrorRateAlert or CriticalPaymentsAlert or PaymentLatencyAlert or InfoLowPaymentErrorRateAlert or DynamicPaymentErrorRateAlert
     for: 0m  # Fire immediately when any alert fires
     labels:
       severity: info
