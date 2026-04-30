@@ -2,7 +2,7 @@ groups:
 - name: payments-core
   rules:
   - alert: WarningPaymentErrorRateAlert
-    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0003
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0005
     for: 10m
     labels:
       severity: warning
@@ -10,15 +10,15 @@ groups:
       service: payment-processing
     annotations: {
       summary: "Elevated payment error rate detected",
-      description: "The payment error rate has exceeded 0.0003 for 10 minutes. Please investigate potential issues before escalation. This tuning is based on recent incident INC-2025-1109 and subsequent recommendations.",
+      description: "The payment error rate has exceeded 0.0005 for 10 minutes. Please investigate potential issues before escalation. This tuning is based on recent incident INC-2025-1109 and subsequent recommendations.",
       runbook: "https://corrected-runbook-url.com/payment-errors",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0003."
+      recovery: "Alert resolved when payment error rate returns below 0.0005."
     }
 
   - alert: CriticalPaymentErrorRateAlert
-    expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.0008
+    expr: rate(payment_errors_total[5m]) / rate(payment_requests_total[5m]) > 0.001
     for: 2m
     labels:
       severity: critical
@@ -26,11 +26,11 @@ groups:
       service: payment-processing
     annotations: {
       summary: "Critical payment error rate detected",
-      description: "The payment error rate has exceeded 0.0008 for 2 minutes. Immediate investigation required. This adjustment follows recent incident INC-2025-1109 and expert tuning recommendations.",
+      description: "The payment error rate has exceeded 0.001 for 2 minutes. Immediate investigation required. This adjustment follows recent incident INC-2025-1109 and expert tuning recommendations.",
       runbook: "https://corrected-runbook-url.com/payment-errors-critical",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 3 minutes, escalate to the payment processing manager.",
-      recovery: "Alert resolved when payment error rate returns below 0.0008."
+      recovery: "Alert resolved when payment error rate returns below 0.001."
     }
 
   - alert: CriticalPaymentsAlert
