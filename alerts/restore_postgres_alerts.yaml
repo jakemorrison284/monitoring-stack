@@ -1,0 +1,34 @@
+# Alert Rules for restore_postgres.sh
+
+alerts:
+  - name: RestoreFailure
+    condition: count() > 0
+    query: |
+      source="restore_postgres.sh" AND message:"Database restoration failed"
+    timeframe: 5m
+    severity: critical
+    notify: ["pagerduty", "email", "slack"]
+
+  - name: BackupFileInvalid
+    condition: count() > 0
+    query: |
+      source="restore_postgres.sh" AND message:"Backup file"
+    timeframe: 10m
+    severity: warning
+    notify: ["email", "slack"]
+
+  - name: NotificationScriptFailure
+    condition: count() > 0
+    query: |
+      source="restore_postgres.sh" AND message:"Error" AND message:"notification"
+    timeframe: 5m
+    severity: warning
+    notify: ["email", "slack"]
+
+  - name: DryRunExecuted
+    condition: count() > 0
+    query: |
+      source="restore_postgres.sh" AND message:"Dry run"
+    timeframe: 1h
+    severity: informational
+    notify: ["email", "slack"]
