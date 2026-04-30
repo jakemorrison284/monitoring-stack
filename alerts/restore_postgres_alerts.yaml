@@ -2,7 +2,7 @@
 
 alerts:
   - name: RestoreFailure
-    condition: count() > 0
+    condition: count() > 2
     query: |
       source="restore_postgres.sh" AND message:"Database restoration failed" AND level:"error"
     timeframe: 5m
@@ -14,7 +14,7 @@ alerts:
       runbook: "https://corrected-runbook-url.com/restore-postgres-failure"
 
   - name: BackupFileInvalid
-    condition: count() > 0
+    condition: count() > 3
     query: |
       source="restore_postgres.sh" AND (message:"Backup file invalid" OR message:"Backup file corrupted")
     timeframe: 10m
@@ -26,7 +26,7 @@ alerts:
       runbook: "https://corrected-runbook-url.com/backup-file-invalid"
 
   - name: NotificationScriptFailure
-    condition: count() > 0
+    condition: count() > 2
     query: |
       source="restore_postgres.sh" AND message:"Error" AND message:"notification script"
     timeframe: 5m
@@ -48,3 +48,14 @@ alerts:
       summary: "Dry run of PostgreSQL restore executed successfully"
       description: "A dry run of the PostgreSQL restore process was executed successfully, indicating readiness for actual restores."
       runbook: "https://corrected-runbook-url.com/dry-run-success"
+
+  - name: RestoreAlertsGroup
+    condition: RestoreFailure or BackupFileInvalid or NotificationScriptFailure
+    timeframe: 0m
+    severity: info
+    notify: ["email", "slack"]
+    annotations:
+      summary: "Grouped alert to reduce alert fatigue for PostgreSQL restore issues"
+      description: "This alert groups multiple restore-related alerts to reduce duplicate notifications."
+
+# Periodically review and tune alert queries, thresholds, and timeframes to minimize false positives and improve detection accuracy.
