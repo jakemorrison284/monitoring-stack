@@ -177,3 +177,4 @@ groups:
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when payment error rates return below threshold for all payment methods."
+}
