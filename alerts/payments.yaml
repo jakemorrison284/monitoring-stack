@@ -12,7 +12,7 @@ groups:
     annotations: {
       summary: "Elevated payment error rate detected",
       description: "The payment error rate has exceeded 0.0005 for 10 minutes. Please investigate potential issues before escalation. This tuning is based on recent incident INC-2025-1109 and subsequent recommendations.",
-      runbook: "https://corrected-runbook-url.com/payment-errors",
+      runbook: "https://internal-runbook.yara.com/payment-errors",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate returns below 0.0005."
@@ -29,7 +29,7 @@ groups:
     annotations: {
       summary: "Critical payment error rate detected",
       description: "The payment error rate has exceeded 0.001 for 2 minutes. Immediate investigation required. This adjustment follows recent incident INC-2025-1109 and expert tuning recommendations.",
-      runbook: "https://corrected-runbook-url.com/payment-errors-critical",
+      runbook: "https://internal-runbook.yara.com/payment-errors-critical",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 3 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate returns below 0.001."
@@ -48,7 +48,7 @@ groups:
     annotations: {
       summary: "Critical payment issues detected",
       description: "High payment error rate or duplicate payment transactions detected. Immediate investigation required. This tuning is based on lessons from incident INC-2025-1109.",
-      runbook: "https://corrected-runbook-url.com/payment-errors-critical",
+      runbook: "https://internal-runbook.yara.com/payment-errors-critical",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 12 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
@@ -65,7 +65,7 @@ groups:
     annotations: {
       summary: "High payment latency detected",
       description: "The average payment latency exceeds 1.2 seconds. Please investigate potential bottlenecks in the payment processing pipeline. Tuning based on incident INC-2025-1109 review.",
-      runbook: "https://corrected-runbook-url.com/payment-latency",
+      runbook: "https://internal-runbook.yara.com/payment-latency",
       contact: "On-call Engineer: Rachel Torres (racheltorres@example.com)",
       escalation: "If not resolved in 3 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when average payment latency returns below 1.2 seconds."
