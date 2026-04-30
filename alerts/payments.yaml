@@ -2,7 +2,7 @@ groups:
 - name: payments-core
   rules:
   - alert: HighPaymentErrorRate
-    expr: rate(payment_errors_total[15m]) / rate(payment_requests_total[15m]) > 0.0005  # Adjusted threshold to 0.05% for accuracy
+    expr: rate(payment_errors_total[10m]) / rate(payment_requests_total[10m]) > 0.0005  # Adjusted threshold to 0.05% for accuracy
     for: 15m  # Consider reviewing if a longer duration is appropriate
     labels: { severity: critical }
     annotations: { 
