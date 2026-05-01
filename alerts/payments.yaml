@@ -270,3 +270,105 @@ groups:
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when error code rate returns to normal levels."
+
+  # New alert for payment request volume spike
+  - alert: PaymentVolumeSpikeAlert
+    expr: (rate(payment_requests_total[10m]) > 1.3 * avg_over_time(rate(payment_requests_total[10m])[1d]))
+    for: 10m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "Significant spike in payment request volume detected"
+      description: "The payment request volume has exceeded 130% of the daily average baseline for more than 10 minutes. Investigate potential upstream or service issues."
+      runbook: "https://internal-runbook.yara.com/payment-volume-spike"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when payment request volume returns to normal baseline."
+
+  # Alert for p95 payment latency
+  - alert: PaymentLatencyP95Alert
+    expr: histogram_quantile(0.95, sum(rate(payment_latency_seconds_bucket[5m])) by (le)) > 1.5
+    for: 5m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "High 95th percentile payment latency detected"
+      description: "The 95th percentile payment latency exceeds 1.5 seconds for more than 5 minutes. Investigate tail latency issues."
+      runbook: "https://internal-runbook.yara.com/payment-latency"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when 95th percentile payment latency returns below threshold."
+
+  # Alert for payment gateway rate limits or throttling
+  - alert: PaymentGatewayRateLimitAlert
+    expr: rate(payment_gateway_rate_limited_total[5m]) > 10
+    for: 5m
+    labels:
+      severity: critical
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "Payment gateway rate limiting events detected"
+      description: "More than 10 payment gateway rate limiting events have occurred in the last 5 minutes. Immediate investigation required."
+      runbook: "https://internal-runbook.yara.com/payment-gateway-rate-limit"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when rate limiting events drop below threshold."
+
+  # Alert for payments stuck in pending status
+  - alert: PaymentPendingStatusAlert
+    expr: sum(payment_pending_total) > 50
+    for: 10m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "High number of payments stuck in pending status"
+      description: "More than 50 payments are in pending status for over 10 minutes. Investigate potential processing delays."
+      runbook: "https://internal-runbook.yara.com/payment-pending-status"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when pending payments drop below threshold."
+
+  # Alert for payment reconciliation mismatches
+  - alert: PaymentReconciliationMismatchAlert
+    expr: rate(payment_reconciliation_mismatches_total[10m]) > 0
+    for: 5m
+    labels:
+      severity: critical
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "Payment reconciliation mismatches detected"
+      description: "One or more payment reconciliation mismatches detected in the last 10 minutes. Immediate investigation required."
+      runbook: "https://internal-runbook.yara.com/payment-reconciliation"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when reconciliation mismatches clear."
+
+  # Alert for unusual geographic payment failure patterns
+  - alert: PaymentGeoFailureAnomalyAlert
+    expr: rate(payment_failures_total{region=~"unusual_region_pattern"}[10m]) > 5
+    for: 10m
+    labels:
+      severity: critical
+      team: payments
+      service: payment-processing
+      alert_type: anomaly
+    annotations:
+      summary: "Unusual geographic pattern in payment failures detected"
+      description: "Elevated payment failures from unusual geographic regions detected. Investigate potential fraud or attack."
+      runbook: "https://internal-runbook.yara.com/payment-geo-failures"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager."
+      recovery: "Alert resolved when geographic failure pattern normalizes."
