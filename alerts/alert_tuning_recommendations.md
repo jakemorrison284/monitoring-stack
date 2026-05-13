@@ -4,10 +4,10 @@
 
 1. Consider increasing the alert duration for WarningPaymentErrorRateAlert from 5 minutes to 10 minutes to reduce noise from transient spikes.
 2. Review escalation timelines to ensure on-call engineers have sufficient response time before escalation.
-3. Add anomaly detection alerts to capture sudden spikes outside threshold-based alerts.
+3. **Add anomaly detection alerts to capture sudden spikes outside threshold-based alerts.**
 4. Monitor and adjust duplicate payment thresholds based on transaction volume changes.
 5. Ensure runbooks are updated with incident learnings and clear remediation steps.
-6. Add alerts for payment request volume drops to catch upstream issues early.
+6. **Add alerts for payment request volume drops to catch upstream issues early.**
 
 ## Restore_postgres_alerts.yaml Alerts
 
