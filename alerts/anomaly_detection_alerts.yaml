@@ -1,0 +1,21 @@
+# Anomaly Detection Alerts Configuration
+
+# Alert for sudden spikes in payment errors
+- alert: HighPaymentErrorRateAnomaly
+  expr: rate(payment_errors_total[5m]) > 1.5 * avg(rate(payment_errors_total[5m]))
+  for: 10m
+  labels:
+    severity: critical
+  annotations:
+    summary: "High Payment Error Rate Anomaly Detected"
+    description: "Anomaly detected in payment error rates, exceeding threshold."
+
+# Alert for drops in payment request volume
+- alert: LowPaymentRequestVolume
+  expr: rate(payment_requests_total[5m]) < 0.5 * avg(rate(payment_requests_total[5m]))
+  for: 10m
+  labels:
+    severity: warning
+  annotations:
+    summary: "Low Payment Request Volume Detected"
+    description: "Payment request volume has dropped significantly."
