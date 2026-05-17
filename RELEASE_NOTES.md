@@ -1,3 +1,5 @@
 # Release v1.0
 
 This is the first release of the monitoring stack.
+
+- Initial release with basic monitoring features.
