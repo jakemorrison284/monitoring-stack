@@ -1,6 +1,6 @@
-# Release Notes for docker-v0.5.7
+# Release v1.0.0
 
-This is the third release of the monitoring stack.
+Initial release of monitoring-stack.
 
 - New features and improvements.
 - Bug fixes and performance enhancements.
