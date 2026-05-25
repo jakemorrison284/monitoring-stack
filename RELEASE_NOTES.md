@@ -1,6 +1,7 @@
-# Release v1.0.0
+Release v1.0.0
 
-Initial release of monitoring-stack.
+- Adjusted thresholds for payment errors and volume drops.
 
-- New features and improvements.
-- Bug fixes and performance enhancements.
+Commit SHA: 5279da4526b4504d5ff50b399bbeda79afed4af4
+
+Release Date: 2026-05-25
