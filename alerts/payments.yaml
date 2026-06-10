@@ -40,7 +40,7 @@ groups:
       description: "High payment error rate (>0.001) or duplicate payment transactions (>3 in 5 minutes) detected. Immediate investigation required.",
       runbook: "https://internal-runbook.yara.com/payment-errors-critical",
       contact: "On-call Rotation: Use on-call system to determine contact",
-      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
 
@@ -197,7 +197,7 @@ groups:
       description: "High payment error rate (>0.001) or duplicate payment transactions (>3 in 5 minutes) detected. Immediate investigation required.",
       runbook: "https://internal-runbook.yara.com/payment-errors-critical",
       contact: "On-call Rotation: Use on-call system to determine contact",
-      escalation: "If not resolved in 10 minutes, escalate to the payment processing manager.",
+      escalation: "If not resolved in 15 minutes, escalate to the payment processing manager.",
       recovery: "Alert resolved when payment error rate and duplicate payments return to normal thresholds."
     }
 
@@ -270,3 +270,20 @@ groups:
       contact: "On-call Rotation: Use on-call system to determine contact"
       escalation: "If not resolved in 10 minutes, escalate to the payment processing manager."
       recovery: "Alert resolved when error code rate returns to normal levels."
+
+  # New alert for payment gateway timeout
+  - alert: PaymentGatewayTimeoutAlert
+    expr: rate(payment_gateway_timeout_total[10m]) > 0.005
+    for: 10m
+    labels:
+      severity: warning
+      team: payments
+      service: payment-processing
+      alert_type: threshold
+    annotations:
+      summary: "Payment gateway timeout rate elevated"
+      description: "The rate of payment gateway timeouts has exceeded 0.5% for 10 minutes. Investigate gateway responsiveness."
+      runbook: "https://internal-runbook.yara.com/payment-gateway-timeouts"
+      contact: "On-call Rotation: Use on-call system to determine contact"
+      escalation: "If not resolved in 15 minutes, escalate to payment processing manager."
+      recovery: "Alert resolved when timeout rate returns below 0.5%."

@@ -312,3 +312,43 @@ alerts:
 # Grouped related alerts for alert fatigue reduction.
 
 # Quarterly alert tidy 2023-Q4: Suggested reviewing 'DryRunExecuted' informational alert and resource utilization alerts for potential removal or tuning.
+
+# Added alert for storage capacity during restore
+- name: RestoreStorageCapacityAlert
+  condition: avg(storage_usage) > 85
+  query: |
+    source="restore_postgres.sh" AND metric="storage_usage"
+  timeframe: 5m
+  severity: warning
+  notify: ["email", "slack", "opsgenie"]
+  labels:
+    team: db-restore
+    service: postgres
+    alert_type: resource
+    owner: db-restore-team
+    priority: P3
+  annotations:
+    summary: "High storage usage during PostgreSQL restore"
+    description: "Storage usage during restore has exceeded 85%, potentially impacting performance."
+    runbook: "https://internal-runbook.yara.com/restore-storage-capacity"
+    contact: "On-call Rotation: Use on-call system to determine contact"
+
+# Added alert for I/O bottleneck during restore
+- name: RestoreIOBottleneckAlert
+  condition: avg(io_wait) > 20
+  query: |
+    source="restore_postgres.sh" AND metric="io_wait"
+  timeframe: 5m
+  severity: warning
+  notify: ["email", "slack", "opsgenie"]
+  labels:
+    team: db-restore
+    service: postgres
+    alert_type: resource
+    owner: db-restore-team
+    priority: P3
+  annotations:
+    summary: "High I/O wait time during PostgreSQL restore"
+    description: "I/O wait time exceeds 20ms, indicating potential bottlenecks."
+    runbook: "https://internal-runbook.yara.com/restore-io-bottleneck"
+    contact: "On-call Rotation: Use on-call system to determine contact"
